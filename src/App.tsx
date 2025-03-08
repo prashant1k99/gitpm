@@ -1,4 +1,5 @@
-import { createSignal, type Component } from 'solid-js';
+import { type Component } from 'solid-js';
+import { useAppState } from './state/auth'
 import AuthPage from './pages/auth';
 import { Navigate, Route } from '@solidjs/router';
 import HomePage from './pages/home';
@@ -18,11 +19,11 @@ const protectedRoutes: ProtectedRouteConfig = [
 
 
 const AuthGuard: Component<{ children: any }> = (props) => {
-  const [isAuthenticated] = createSignal(false); // Replace with your auth logic
+  const [appState, setAppState] = useAppState();
 
   return (
     <>
-      {isAuthenticated() ? (
+      {appState.isAuthenticated ? (
         props.children
       ) : (
         <Navigate href="/login" />
