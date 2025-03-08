@@ -1,8 +1,8 @@
 import { createEffect, type Component } from 'solid-js';
 import { signInWithPopup, GithubAuthProvider } from "firebase/auth";
-import { auth } from "../utils/firebase"
-import { useAppState } from '../state/auth';
-import { Navigate, useNavigate } from '@solidjs/router';
+import { auth } from "@/utils/firebase"
+import { useAppState } from '@/state/auth';
+import { useNavigate } from '@solidjs/router';
 
 const AuthPage: Component = () => {
   const [appState, setAppState] = useAppState();
