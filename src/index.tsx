@@ -4,6 +4,7 @@ import { Router } from '@solidjs/router';
 
 import './index.css';
 import App from './App';
+import Toast from './components/toast';
 
 const root = document.getElementById('root');
 

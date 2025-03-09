@@ -3,6 +3,7 @@ import { useAppState } from './state/auth'
 import AuthPage from './pages/auth';
 import { Navigate, Route } from '@solidjs/router';
 import HomePage from './pages/home';
+import Layout from './layout/default';
 
 const Dashboard: Component = () => <div>Dashboard Page</div>;
 
@@ -38,7 +39,9 @@ const createProtectedRoutes = (routes: ProtectedRouteConfig) => {
       path={path}
       component={() => (
         <AuthGuard>
-          <RouteComponent />
+          <Layout>
+            <RouteComponent />
+          </Layout>
         </AuthGuard>
       )}
     />

@@ -3,10 +3,13 @@ import { signInWithPopup, GithubAuthProvider } from "firebase/auth";
 import { auth } from "@/utils/firebase"
 import { useAppState } from '@/state/auth';
 import { useNavigate } from '@solidjs/router';
+import { ToastType, useToasts } from '@/state/toast';
+import Toast from '@/components/toast';
 
 const AuthPage: Component = () => {
-  const [appState, setAppState] = useAppState();
+  const [appState] = useAppState();
   const navigate = useNavigate()
+  const [_, { addToast }] = useToasts();
 
   createEffect(() => {
     if (appState.isAuthenticated) {
@@ -31,6 +34,7 @@ const AuthPage: Component = () => {
         const user = result.user;
         console.log(user)
 
+        addToast("Successfully logged in", ToastType.SUCCESS)
         // Redirect user to the home page
       }).catch((error) => {
         // Handle Errors here.
@@ -50,6 +54,7 @@ const AuthPage: Component = () => {
         Auth Page
       </h1>
       <button onClick={authenticateUser} class="btn btn-primary">Login</button>
+      <Toast />
     </div>
   );
 };

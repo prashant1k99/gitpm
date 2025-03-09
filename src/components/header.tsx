@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { signInWithPopup, GithubAuthProvider, signOut } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import { auth } from "@/utils/firebase"
 import { useNavigate } from '@solidjs/router';
 
