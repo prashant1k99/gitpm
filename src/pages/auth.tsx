@@ -5,6 +5,7 @@ import { useAppState } from '@/state/auth';
 import { useNavigate } from '@solidjs/router';
 import { ToastType, useToasts } from '@/state/toast';
 import Toast from '@/components/toast';
+import { AiFillGithub } from 'solid-icons/ai';
 
 const AuthPage: Component = () => {
   const [appState] = useAppState();
@@ -49,11 +50,22 @@ const AuthPage: Component = () => {
   }
 
   return (
-    <div class='flex h-full min-w-dvh justify-center items-center'>
-      <h1 class="text-3xl font-bold underline">
-        Auth Page
-      </h1>
-      <button onClick={authenticateUser} class="btn btn-primary">Login</button>
+    <div class='flex flex-col h-full min-h-dvh justify-center items-center'>
+      <div class="card card-dash bg-secondary-content w-lg">
+        <div class="card-body flex flex-col gap-4">
+          <div class='flex flex-col justify-center items-center gap-2'>
+            <img src='/src/assets/logo.png' alt='GitPM Logo' class='w-16 h-16' />
+            <h2 class="card-title">Authenticate gitPM</h2>
+          </div>
+          <p>Sign in with your Github account to continue, as GitPM uses your github organizations, projects, issues and repository to manage the tasks and GitPM does not stores any information, as we purely rely on GitHub APIs to store all information.</p>
+          <div class="card-actions">
+            <button class="btn bg-black text-white border-black w-full" onClick={authenticateUser}>
+              <AiFillGithub class='w-4 h-4' />
+              Sign In With Github
+            </button>
+          </div>
+        </div>
+      </div>
       <Toast />
     </div>
   );
