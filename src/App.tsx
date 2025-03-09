@@ -20,7 +20,7 @@ const protectedRoutes: ProtectedRouteConfig = [
 
 
 const AuthGuard: Component<{ children: any }> = (props) => {
-  const [appState, setAppState] = useAppState();
+  const [appState] = useAppState();
 
   return (
     <>
