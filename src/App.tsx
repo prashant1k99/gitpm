@@ -4,6 +4,7 @@ import AuthPage from './pages/auth';
 import { Navigate, Route } from '@solidjs/router';
 import HomePage from './pages/home';
 import Layout from './layout/default';
+import FullScreenLayout from './layout/fullScreen';
 
 const Dashboard: Component = () => <div>Dashboard Page</div>;
 
@@ -51,7 +52,12 @@ const createProtectedRoutes = (routes: ProtectedRouteConfig) => {
 const App: Component = () => {
   return (
     <Route>
-      <Route path="/login" component={AuthPage} />
+      <Route path="/login" component={() => (
+        <FullScreenLayout>
+          <AuthPage />
+        </FullScreenLayout>
+      )
+      } />
       {createProtectedRoutes(protectedRoutes)}
     </Route>
   );
