@@ -6,6 +6,7 @@ import { useNavigate } from '@solidjs/router';
 import { ToastType, useToasts } from '@/state/toast';
 import Toast from '@/components/toast';
 import { AiFillGithub } from 'solid-icons/ai';
+import ThemeSwitcher from '@/components/theme-switcher';
 
 const AuthPage: Component = () => {
   const [appState] = useAppState();
@@ -52,23 +53,28 @@ const AuthPage: Component = () => {
   }
 
   return (
-    <div class='flex flex-col h-full min-h-dvh justify-center items-center'>
-      <div class="card card-dash bg-accent-content w-lg ring ring-accent">
-        <div class="card-body flex flex-col gap-4">
-          <div class='flex flex-col justify-center items-center gap-2'>
-            <img src='/src/assets/logo.png' alt='GitPM Logo' class='w-16 h-16' />
-            <h2 class="card-title text-2xl">Authenticate gitPM</h2>
-          </div>
-          <p class='text-pretty'>Sign in with your Github account to continue, as GitPM uses your github organizations, projects, issues and repository to manage the tasks and GitPM does not stores any information, as we purely rely on GitHub APIs to store all information.</p>
-          <div class="card-actions">
-            <button class="btn bg-black text-white border-black w-full hover:ring-1" onClick={authenticateUser}>
-              <AiFillGithub class='w-4 h-4' />
-              Sign In With Github
-            </button>
+    <div class='relative min-h-dvh h-full w-full'>
+      <div class='absolute top-4 right-4'>
+        <ThemeSwitcher />
+      </div>
+      <div class='flex min-h-dvh w-full justify-center items-center'>
+        <div class="card card-dash bg-accent-content w-lg ring ring-accent">
+          <div class="card-body flex flex-col gap-4 text-accent">
+            <div class='flex flex-col justify-center items-center gap-2'>
+              <img src='/src/assets/logo.png' alt='GitPM Logo' class='w-16 h-16' />
+              <h2 class="card-title text-2xl">Authenticate gitPM</h2>
+            </div>
+            <p class='text-pretty'>Sign in with your Github account to continue, as GitPM uses your github organizations, projects, issues and repository to manage the tasks and GitPM does not stores any information, as we purely rely on GitHub APIs to store all information.</p>
+            <div class="card-actions">
+              <button class="btn bg-black text-white border-black w-full hover:ring-1" onClick={authenticateUser}>
+                <AiFillGithub class='w-4 h-4' />
+                Sign In With Github
+              </button>
+            </div>
           </div>
         </div>
+        <Toast />
       </div>
-      <Toast />
     </div>
   );
 };

@@ -6,5 +6,5 @@ html, body {
 }
 
 @plugin "daisyui" {
-  themes: retro --default, synthwave --prefersdark;
+  themes: retro, synthwave --default;
 }
