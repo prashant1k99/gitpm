@@ -13,9 +13,11 @@ const ThemeSwitcher: Component = () => {
   };
 
   return (
-    <button onClick={toggleTheme} class="btn btn-ghost">
-      <Dynamic component={theme() == 'light' ? FiMoon : FiSun} class="h-5 w-5" />
-    </button>
+    <div class="tooltip tooltip-left" data-tip={`Switch to ${theme() == 'light' ? 'Dark' : 'Light'} theme`}>
+      <button onClick={toggleTheme} class="btn btn-ghost">
+        <Dynamic component={theme() == 'light' ? FiMoon : FiSun} class="h-5 w-5" />
+      </button>
+    </div>
   );
 };
 
