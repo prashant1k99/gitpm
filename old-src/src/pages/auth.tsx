@@ -1,12 +1,12 @@
 import { createEffect, type Component } from 'solid-js';
 import { signInWithPopup, GithubAuthProvider } from "firebase/auth";
-import { auth } from "@/utils/firebase"
-import { useAppState } from '@/state/auth';
+import { auth } from "old-src/src/utils/firebase"
+import { useAppState } from 'old-src/src/state/auth';
 import { useNavigate } from '@solidjs/router';
-import { ToastType, useToasts } from '@/state/toast';
-import Toast from '@/components/toast';
+import { ToastType, useToasts } from 'old-src/src/state/toast';
+import Toast from 'old-src/src/components/toast';
 import { AiFillGithub } from 'solid-icons/ai';
-import ThemeSwitcher from '@/components/theme-switcher';
+import ThemeSwitcher from 'old-src/src/components/theme-switcher';
 
 const AuthPage: Component = () => {
   const [appState] = useAppState();

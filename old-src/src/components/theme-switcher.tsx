@@ -1,7 +1,6 @@
 import type { Component } from 'solid-js';
 
 const ThemeSwitcher: Component = () => {
-
   return (
     <label class="swap swap-rotate">
       <input type="checkbox" class="theme-controller" value="retro" />

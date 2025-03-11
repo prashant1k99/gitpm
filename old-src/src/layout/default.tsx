@@ -1,8 +1,9 @@
-import Toast from '@/components/toast';
+import Toast from 'old-src/src/components/toast';
 import type { Component } from 'solid-js';
 import { signOut } from "firebase/auth";
-import { auth } from "@/utils/firebase"
+import { auth } from "old-src/src/utils/firebase"
 import { useNavigate } from '@solidjs/router';
+import Header from 'old-src/src/components/header';
 
 const Layout: Component<{ children: any }> = (props) => {
   const navigate = useNavigate()
@@ -16,10 +17,9 @@ const Layout: Component<{ children: any }> = (props) => {
     });
   }
 
-
   return (
     <div class="min-h-dvh min-w-dvw flex flex-row">
-      <aside class="w-80 bg-base-200 border-r border-base-300 p-8 flex flex-col gap-4">
+      <aside class="w-80 bg-base-200 border-r border-base-300 p-6 flex flex-col gap-4">
         <div class="flex items-center gap-2 px-2">
           <img src="/src/assets/logo.png" alt="GitPM Logo" class="w-8 h-8" />
           <h1 class="text-xl font-bold">GitPM</h1>
@@ -37,7 +37,8 @@ const Layout: Component<{ children: any }> = (props) => {
         </nav>
         <button onClick={signOutUser} class="btn btn-error">Sign Out</button>
       </aside>
-      <main class="flex-1 container mx-auto px-4 py-8">
+      <main class="flex-1 container mx-auto px-4">
+        <Header />
         {props.children}
       </main>
       <Toast />

@@ -1,5 +1,5 @@
-import ThemeSwitcher from '@/components/theme-switcher';
-import Toast from '@/components/toast';
+import ThemeSwitcher from 'old-src/src/components/theme-switcher';
+import Toast from 'old-src/src/components/toast';
 import type { Component } from 'solid-js';
 
 const FullScreenLayout: Component<{ children: any }> = (props) => {

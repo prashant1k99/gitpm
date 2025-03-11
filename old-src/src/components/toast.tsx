@@ -1,4 +1,4 @@
-import { useToasts } from '@/state/toast';
+import { useToasts } from 'old-src/src/state/toast';
 import { For, type Component } from 'solid-js';
 
 const Toast: Component = () => {

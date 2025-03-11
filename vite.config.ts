@@ -1,19 +1,14 @@
-import { defineConfig } from 'vite';
-import solidPlugin from 'vite-plugin-solid';
-import tailwindcss from '@tailwindcss/vite'
-import { resolve } from 'path';
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from "path"
+import tailwindcss from "@tailwindcss/vite"
 
+// https://vite.dev/config/
 export default defineConfig({
-  plugins: [solidPlugin(), tailwindcss()],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src'),
+      "@": path.resolve(__dirname, "./src"),
     },
   },
-  server: {
-    port: 3000,
-  },
-  build: {
-    target: 'esnext',
-  },
-});
+})
