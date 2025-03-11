@@ -8,6 +8,8 @@ export default function DashboardPage() {
       <h1>
         Dashboard Page
       </h1>
+
+      {JSON.stringify(user, null, 2)}
     </div>
   )
 }

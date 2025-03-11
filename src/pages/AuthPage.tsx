@@ -4,19 +4,23 @@ import { auth } from "@/lib/firebase"
 import authState from "@/state/auth";
 import { useSignalEffect } from "@preact/signals-react";
 import { useNavigate } from "react-router-dom";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Github, LoaderCircle } from 'lucide-react';
+import { useState } from "react";
 
 export default function AuthPage() {
   const navigate = useNavigate();
 
-  // const authS = useSignal(authState);
+  const [isProcessing, setIsProcessing] = useState(false);
+
   useSignalEffect(() => {
-    // if (authS.value.value.isAuthenticated) {
     if (authState.value.isAuthenticated) {
       navigate("/")
     }
   })
 
   const authenticateUser = () => {
+    setIsProcessing(true)
     const provider = new GithubAuthProvider();
     provider.addScope('repo');
     provider.addScope('project');
@@ -44,12 +48,37 @@ export default function AuthPage() {
         // const credential = GithubAuthProvider.credentialFromError(error);
         // ...
         console.error(error)
-      });
+      }).finally(() => setIsProcessing(false))
+
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-svh">
-      <Button className="cursor-pointer" onClick={authenticateUser}>Click me</Button>
+    <div className="flex min-h-svh justify-center items-center">
+      <div className="flex w-full max-w-md flex-col gap-6 ">
+        <Card>
+          <CardHeader className="text-center">
+            <CardTitle className="flex flex-col justify-center items-center text-2xl gap-2">
+              <img src='/src/assets/logo.png' alt='GitPM Logo' className='w-16 h-16' />
+              <h1>
+                Welcome To GitPM
+              </h1>
+            </CardTitle>
+            <CardDescription>
+              Where we bring Project Management near to Code
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button disabled={isProcessing} className="cursor-pointer w-full" onClick={authenticateUser}>
+              {isProcessing ? (
+                <LoaderCircle className="w-4 h-4 animate-spin" />
+              ) : (
+                <Github className="w-4 h-4" />
+              )}
+              Sign In With Github
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }
