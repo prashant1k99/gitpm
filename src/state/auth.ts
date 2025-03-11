@@ -21,6 +21,7 @@ const authState = signal<AppState>({
 
 onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
   if (firebaseUser) {
+    console.log(firebaseUser)
     authState.value = {
       isAuthenticated: true,
       user: {

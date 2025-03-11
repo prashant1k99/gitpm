@@ -23,6 +23,7 @@ export default function AuthPage() {
   const authenticateUser = () => {
     setIsProcessing(true)
     const provider = new GithubAuthProvider();
+    provider.addScope('user');
     provider.addScope('repo');
     provider.addScope('project');
     provider.addScope('admin:org');

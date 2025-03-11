@@ -1,12 +1,11 @@
 import * as React from "react"
-import { ChevronsUpDown, Plus } from "lucide-react"
+import { ChevronsUpDown, Plus, Settings } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -15,7 +14,9 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-export function TeamSwitcher({
+
+
+export function OrganizationSwitcher({
   teams,
 }: {
   teams: {
@@ -57,11 +58,12 @@ export function TeamSwitcher({
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Teams
+              Organizations
             </DropdownMenuLabel>
+            <DropdownMenuSeparator />
             {teams.map((team, index) => (
               <DropdownMenuItem
-                key={team.name}
+                key={index}
                 onClick={() => setActiveTeam(team)}
                 className="gap-2 p-2"
               >
@@ -69,9 +71,17 @@ export function TeamSwitcher({
                   <team.logo className="size-4 shrink-0" />
                 </div>
                 {team.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="gap-2 p-2 "
+            >
+              <div className="flex size-6 items-center justify-center rounded-sm border">
+                <Settings className="size-4 shrink-0 " />
+              </div>
+              Settings
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2">
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
