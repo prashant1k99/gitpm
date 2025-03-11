@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 import { useTheme } from "@/components/theme-provider"
 import { Button } from '@/components/ui/button';
 import { Moon, SunMedium } from 'lucide-react';
+import { Toaster } from '@/components/ui/sonner';
 
 export default function RootLayout({ children }: { children?: ReactNode }) {
   const { theme, setTheme } = useTheme()
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: { children?: ReactNode }) {
       </Button>
       {/* Common elements like app-wide notifications could go here */}
       {children || <Outlet />}
+      <Toaster />
     </div>
   );
 }
