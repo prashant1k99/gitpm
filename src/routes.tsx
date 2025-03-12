@@ -5,6 +5,7 @@ import ProtectedRoute from '@/routes/ProtectedRoutes';
 import DashboardPage from '@/pages/Dashboard';
 import AuthPage from '@/pages/AuthPage';
 import NotFoundPage from '@/pages/NotFoundPage';
+import Onboarding from './pages/Onboarding';
 
 const routes: RouteObject[] = [
   {
@@ -15,6 +16,17 @@ const routes: RouteObject[] = [
         path: 'login',
         element: <AuthPage />,
       },
+      {
+        path: 'onboarding',
+        element: <ProtectedRoute />,
+        children: [
+          {
+            index: true,
+            element: <Onboarding />,
+          },
+        ],
+      },
+
     ],
     errorElement: <NotFoundPage />,
   },

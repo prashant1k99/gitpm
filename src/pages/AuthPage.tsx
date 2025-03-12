@@ -7,6 +7,7 @@ import { Github, LoaderCircle } from 'lucide-react';
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { githubAuth } from "@/utils/auth";
+import orgState from "@/state/organizations";
 
 export default function AuthPage() {
   const navigate = useNavigate();
@@ -24,7 +25,11 @@ export default function AuthPage() {
 
   useSignalEffect(() => {
     if (authState.value.isAuthenticated) {
-      navigate("/")
+      if (orgState.value.activeOrg) {
+        navigate("/")
+      } else {
+        navigate("/onboarding")
+      }
     }
   })
 
