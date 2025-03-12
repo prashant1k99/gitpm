@@ -1,15 +1,20 @@
+import { Button } from "@/components/ui/button";
 import authState from "@/state/auth";
+import githubQueries from "@/utils/githubQueries";
 
 export default function DashboardPage() {
-  const user = authState.value.user;
+  const user = authState.value;
+
+  const loadDataFromGithub = () => {
+    githubQueries(user.githubToken as string).then((data) => console.log(data))
+  }
 
   return (
     <div>
       <h1>
         Dashboard Page
       </h1>
-
-      {JSON.stringify(user, null, 2)}
+      <Button onClick={loadDataFromGithub}> Load data</Button>
     </div>
   )
 }

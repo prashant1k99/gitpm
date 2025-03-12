@@ -10,7 +10,7 @@ export function NavThemeSwitcher() {
   }
 
   return (
-    <Button variant={"ghost"} size={"icon"} onClick={toggleTheme}>
+    <Button variant={"outline"} size={"icon"} onClick={toggleTheme}>
       {theme == "light" ? <Moon className='w-5 h-5' /> : <SunMedium className='w-5 h-5' />}
     </Button>
   )

@@ -8,7 +8,7 @@ import { NavThemeSwitcher } from '@/components/nav/nave-theme-switcher';
 
 export default function MainLayout({ children }: { children?: ReactNode }) {
   return (
-    <SidebarProvider>
+    <SidebarProvider className='overflow-x-hidden max-w-svw'>
       <AppSidebar />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b ">

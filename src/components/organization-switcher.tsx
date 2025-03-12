@@ -4,7 +4,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -57,9 +56,14 @@ export function OrganizationSwitcher({
             side={isMobile ? "bottom" : "right"}
             sideOffset={4}
           >
-            <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Organizations
-            </DropdownMenuLabel>
+            <DropdownMenuItem
+              className="gap-2 p-2 "
+            >
+              <div className="flex size-6 items-center justify-center rounded-sm border">
+                <Settings className="size-4 shrink-0 " />
+              </div>
+              Settings
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             {teams.map((team, index) => (
               <DropdownMenuItem
@@ -74,20 +78,11 @@ export function OrganizationSwitcher({
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="gap-2 p-2 "
-            >
-              <div className="flex size-6 items-center justify-center rounded-sm border">
-                <Settings className="size-4 shrink-0 " />
-              </div>
-              Settings
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2">
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <Plus className="size-4" />
               </div>
-              <div className="font-medium text-muted-foreground">Add team</div>
+              <div className="font-medium text-muted-foreground">Add Organization</div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

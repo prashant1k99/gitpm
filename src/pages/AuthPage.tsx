@@ -1,6 +1,4 @@
 import { Button } from "@/components/ui/button"
-import { signInWithPopup, GithubAuthProvider, signOut } from "firebase/auth";
-import { auth } from "@/lib/firebase"
 import authState from "@/state/auth";
 import { useSignalEffect } from "@preact/signals-react";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Github, LoaderCircle } from 'lucide-react';
 import { useState } from "react";
 import { toast } from "sonner";
+import { githubAuth } from "@/utils/auth";
 
 export default function AuthPage() {
   const navigate = useNavigate();
@@ -22,29 +21,14 @@ export default function AuthPage() {
 
   const authenticateUser = () => {
     setIsProcessing(true)
-    const provider = new GithubAuthProvider();
-    provider.addScope('user');
-    provider.addScope('repo');
-    provider.addScope('project');
-    provider.addScope('admin:org');
 
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        // This gives you a GitHub Access Token. You can use it to access the GitHub API.
-        const credential = GithubAuthProvider.credentialFromResult(result);
-        if (!credential) {
-          toast.error("Something went wrong", {
-            description: "Unable to get Github token"
-          })
-          signOut(auth)
-          throw new Error("Something went wrong");
-        }
-      }).catch((error) => {
-        toast.error("Failed to Authenitcate", {
-          description: error.message
-        })
-      }).finally(() => setIsProcessing(false))
-
+    githubAuth().then(() => {
+      console.log("Successfully saved token")
+    }).catch((error) => {
+      toast.error("Failed to Authenitcate", {
+        description: error.message
+      })
+    }).finally(() => setIsProcessing(false))
   }
 
   return (

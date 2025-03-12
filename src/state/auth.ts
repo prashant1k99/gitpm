@@ -1,6 +1,8 @@
 import { signal } from "@preact/signals-react";
 import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth'
 import { auth } from '@/lib/firebase';
+import { getKeyFromDB, logUserOut } from "@/utils/auth";
+import { toast } from "sonner";
 
 interface User {
   uid: string;
@@ -12,29 +14,47 @@ interface User {
 interface AppState {
   isAuthenticated: boolean;
   user: User | null;
+  firebaseUser: FirebaseUser | null;
+  githubToken: string | null;
+  githubTokenExpired: boolean;
 }
 
 const authState = signal<AppState>({
   isAuthenticated: false,
-  user: null
+  user: null,
+  firebaseUser: null,
+  githubToken: null,
+  githubTokenExpired: false
 })
 
 onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
   if (firebaseUser) {
-    console.log(firebaseUser)
-    authState.value = {
-      isAuthenticated: true,
-      user: {
-        uid: firebaseUser.uid,
-        email: firebaseUser.email,
-        displayName: firebaseUser.displayName,
-        photoURL: firebaseUser.photoURL
+    getKeyFromDB().then((githubToken) => {
+      authState.value = {
+        isAuthenticated: true,
+        user: {
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          displayName: firebaseUser.displayName,
+          photoURL: firebaseUser.photoURL
+        },
+        firebaseUser: firebaseUser,
+        githubToken: githubToken,
+        githubTokenExpired: false
       }
-    }
+    }).catch((error: string) => {
+      toast.error("Something went wrong while fetching", {
+        description: error
+      })
+      logUserOut()
+    })
   } else {
     authState.value = {
       isAuthenticated: false,
-      user: null
+      user: null,
+      firebaseUser: null,
+      githubToken: null,
+      githubTokenExpired: false
     }
   }
 })

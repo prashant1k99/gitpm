@@ -26,11 +26,10 @@ import {
 } from "@/components/ui/sidebar"
 
 import authState from "@/state/auth"
-import { signOut } from "firebase/auth"
-import { auth } from "@/lib/firebase"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { toast } from "sonner"
+import { logUserOut } from "@/utils/auth"
 
 export function NavUser() {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -38,7 +37,7 @@ export function NavUser() {
   const navigator = useNavigate()
   const singOutUser = () => {
     setIsProcessing(true)
-    signOut(auth).then(() => {
+    logUserOut().then(() => {
       navigator("/login")
     }).catch((error) => {
       console.log(error);
