@@ -36,6 +36,7 @@ const githubAuth = (): Promise<boolean> => {
 
 const getKeyFromDB = (): Promise<string | null> => {
   return new Promise<string | null>((resolve, reject: (reason: string) => void) => {
+    console.log("Load key from Firestore")
     const user = auth.currentUser;
 
     if (!user) {

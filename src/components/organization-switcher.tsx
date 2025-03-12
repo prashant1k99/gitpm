@@ -1,5 +1,5 @@
 import * as React from "react"
-import { ChevronsUpDown, Plus, Settings } from "lucide-react"
+import { ChevronsUpDown, ExternalLink, Settings } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -78,9 +78,9 @@ export function OrganizationSwitcher({
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="gap-2 p-2">
+            <DropdownMenuItem className="gap-2 p-2 cursor-pointer" onClick={() => window.open("https://github.com/organizations/plan", "_blank")}>
               <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                <Plus className="size-4" />
+                <ExternalLink />
               </div>
               <div className="font-medium text-muted-foreground">Add Organization</div>
             </DropdownMenuItem>
