@@ -1,6 +1,5 @@
-import { signal } from "@preact/signals-react";
-import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth'
-import { auth } from "@/lib/firebase";
+import { effect, signal } from "@preact/signals-react";
+import authState from "./auth";
 
 interface Organization {
   name: string,
@@ -29,12 +28,12 @@ const orgState = signal<OrganizationsState>({
   areOrgLoaded: false
 })
 
-onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
-  if (firebaseUser) {
-    const activeOrg = getActiveOrgFromLocalStorage(firebaseUser.uid)
+effect(() => {
+  if (authState.value.user) {
+    const activeOrg = getActiveOrgFromLocalStorage(authState.value.user.uid as string)
     orgState.value.activeOrg = activeOrg
-    // Call API to load all the Orgs for User
   }
+  // Load all the other organizations after setting it up
 })
 
 export default orgState
