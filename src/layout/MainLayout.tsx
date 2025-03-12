@@ -5,8 +5,14 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import { AppSidebar } from "@/components/app-sidebar"
 import { Separator } from '@/components/ui/separator';
 import { NavThemeSwitcher } from '@/components/nav/nave-theme-switcher';
+import orgState from '@/state/organizations';
+import { useSignalEffect } from '@preact/signals-react';
 
 export default function MainLayout({ children }: { children?: ReactNode }) {
+  useSignalEffect(() => {
+    console.log("OrgState", orgState.value)
+  })
+
   return (
     <SidebarProvider className='overflow-x-hidden max-w-svw'>
       <AppSidebar />

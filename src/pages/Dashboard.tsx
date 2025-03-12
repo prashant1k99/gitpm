@@ -1,8 +1,20 @@
 import { Button } from "@/components/ui/button";
-import { GithubClient } from "@/services/core/githubGraphql";
-import { useState } from "react";
+import { Organization } from "@/services/api/organizations";
+import { GithubClient } from "@/services/core/github";
+import authState from "@/state/auth";
+import { useEffect, useState } from "react";
 
 export default function DashboardPage() {
+  useEffect(() => {
+    if (authState.value.githubToken) {
+      const org = new Organization(authState.value.githubToken)
+      org.organizations.then((orgs) => {
+        const key = `${authState.value.user?.uid}:activeOrg`
+        localStorage.setItem(key, JSON.stringify(orgs.data[0]))
+        console.log(orgs)
+      })
+    }
+  }, [])
   const [res, setRes] = useState("")
   const [res1, setRes1] = useState("")
   const test = async () => {
