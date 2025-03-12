@@ -4,7 +4,7 @@ import { useSignalEffect } from "@preact/signals-react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Github, LoaderCircle } from 'lucide-react';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { githubAuth } from "@/utils/auth";
 
@@ -12,6 +12,15 @@ export default function AuthPage() {
   const navigate = useNavigate();
 
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer); // Cleanup timeout on unmount
+  }, []); // This is in place to stop user from authenticating when they are already logged in
 
   useSignalEffect(() => {
     if (authState.value.isAuthenticated) {
@@ -47,7 +56,7 @@ export default function AuthPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button disabled={isProcessing} className="cursor-pointer w-full" onClick={authenticateUser}>
+            <Button disabled={isProcessing || isLoading} className="cursor-pointer w-full" onClick={authenticateUser}>
               {isProcessing ? (
                 <LoaderCircle className="w-4 h-4 animate-spin" />
               ) : (
@@ -61,5 +70,3 @@ export default function AuthPage() {
     </div>
   )
 }
-
-
