@@ -14,9 +14,11 @@ export default function RootLayout({ children }: { children?: ReactNode }) {
 
   return (
     <div className="relative min-h-dvh min-w-dvw overflow-x-hidden bg-muted">
-      <Button onClick={toggleTheme} className='absolute top-4 right-4 cursor-pointer' size={'icon'}>
-        {theme == "light" ? <Moon className='w-4 h-4' /> : <SunMedium className='w-4 h-4' />}
-      </Button>
+      <div className='absolute top-4 right-4 flex justify-center gap-4'>
+        <Button onClick={toggleTheme} className='cursor-pointer' size={'icon'}>
+          {theme == "light" ? <Moon className='w-4 h-4' /> : <SunMedium className='w-4 h-4' />}
+        </Button>
+      </div>
       {/* Common elements like app-wide notifications could go here */}
       {children || <Outlet />}
       <Toaster />

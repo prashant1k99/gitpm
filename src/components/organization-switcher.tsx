@@ -98,18 +98,27 @@ export function OrganizationSwitcher() {
               )
             }
             {orgsLoaded ? (
-              orgs.map((org, index) => (
+              orgs.length > 0 ? (
+                orgs.map((org, index) => (
+                  <DropdownMenuItem
+                    key={index}
+                    onClick={() => switchOrg(org.id)}
+                    className="gap-2 p-2"
+                  >
+                    <div className="flex size-6 items-center justify-center rounded-sm border">
+                      <img className="inline-block size-8 rounded-md w-4 h-4" src={org?.avatar} alt="" />
+                    </div>
+                    {org.name}
+                  </DropdownMenuItem>
+                ))
+              ) : (
                 <DropdownMenuItem
-                  key={index}
-                  onClick={() => switchOrg(org.id)}
-                  className="gap-2 p-2"
+                  disabled
+                  className="gap-2 p-2 "
                 >
-                  <div className="flex size-6 items-center justify-center rounded-sm border">
-                    <img className="inline-block size-8 rounded-md w-4 h-4" src={org?.avatar} alt="" />
-                  </div>
-                  {org.name}
+                  No Org found
                 </DropdownMenuItem>
-              ))
+              )
             ) : (
               <div className="flex flex-col gap-2">
                 <Skeleton className="w-full h-10" />
