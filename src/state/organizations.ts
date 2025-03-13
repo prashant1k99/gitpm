@@ -32,8 +32,9 @@ effect(() => {
   if (authState.value.user) {
     const activeOrg = getActiveOrgFromLocalStorage(authState.value.user.uid as string)
     orgState.value.activeOrg = activeOrg
+
+    // Load all the other organizations after setting it up
   }
-  // Load all the other organizations after setting it up
 })
 
 export default orgState

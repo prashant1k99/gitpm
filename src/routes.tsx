@@ -10,6 +10,7 @@ import TestPage from './pages/Test';
 
 const routes: RouteObject[] = [
   {
+    path: "/",
     element: <RootLayout />,
     errorElement: <NotFoundPage />,
     children: [
