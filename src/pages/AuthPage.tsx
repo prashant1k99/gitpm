@@ -1,34 +1,38 @@
 import { Button } from "@/components/ui/button"
-import authState from "@/state/auth";
+import authState, { loadGithubToken } from "@/state/auth";
 import { useSignalEffect } from "@preact/signals-react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Github, LoaderCircle } from 'lucide-react';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { githubAuth } from "@/utils/auth";
 import orgState from "@/state/organizations";
 
 export default function AuthPage() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-
-    return () => clearTimeout(timer); // Cleanup timeout on unmount
-  }, []); // This is in place to stop user from authenticating when they are already logged in
 
   useSignalEffect(() => {
+    // handle the loading of github token here and give feedback to user
     if (authState.value.isAuthenticated) {
-      if (orgState.value.activeOrg) {
-        navigate("/")
+      if (authState.value.githubToken) {
+        if (orgState.value.activeOrg) {
+          const to = location.state?.from || '/';
+          navigate(to, { replace: true });
+        } else {
+          navigate("/onboarding")
+        }
       } else {
-        navigate("/onboarding")
+        setIsProcessing(true)
+        toast.success("Authenticated Successfully", {
+          description: "Loading github token"
+        })
+        loadGithubToken().finally(() => {
+          setIsProcessing(false)
+        })
       }
     }
   })
@@ -61,7 +65,7 @@ export default function AuthPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button disabled={isProcessing || isLoading} className="cursor-pointer w-full" onClick={authenticateUser}>
+            <Button disabled={isProcessing} className="cursor-pointer w-full" onClick={authenticateUser}>
               {isProcessing ? (
                 <LoaderCircle className="w-4 h-4 animate-spin" />
               ) : (

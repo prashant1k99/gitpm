@@ -29,25 +29,18 @@ const authState = signal<AppState>({
 
 onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
   if (firebaseUser) {
-    getKeyFromDB().then((githubToken) => {
-      authState.value = {
-        isAuthenticated: true,
-        user: {
-          uid: firebaseUser.uid,
-          email: firebaseUser.email,
-          displayName: firebaseUser.displayName,
-          photoURL: firebaseUser.photoURL
-        },
-        firebaseUser: firebaseUser,
-        githubToken: githubToken,
-        githubTokenExpired: false
-      }
-    }).catch((error: string) => {
-      toast.error("Something went wrong while fetching", {
-        description: error
-      })
-      logUserOut()
-    })
+    authState.value = {
+      isAuthenticated: true,
+      user: {
+        uid: firebaseUser.uid,
+        email: firebaseUser.email,
+        displayName: firebaseUser.displayName,
+        photoURL: firebaseUser.photoURL
+      },
+      firebaseUser: firebaseUser,
+      githubToken: null,
+      githubTokenExpired: false
+    }
   } else {
     authState.value = {
       isAuthenticated: false,
@@ -57,6 +50,23 @@ onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
       githubTokenExpired: false
     }
   }
+})
+
+export const loadGithubToken = () => new Promise((resolve, reject) => {
+  getKeyFromDB().then((githubToken) => {
+    authState.value = {
+      ...authState.value,
+      githubToken: githubToken
+    }
+    // authState.value.githubToken = githubToken
+    resolve("Ok")
+  }).catch((error: string) => {
+    toast.error("Something went wrong while fetching", {
+      description: error
+    })
+    logUserOut()
+    reject()
+  })
 })
 
 export default authState

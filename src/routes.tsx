@@ -6,11 +6,12 @@ import DashboardPage from '@/pages/Dashboard';
 import AuthPage from '@/pages/AuthPage';
 import NotFoundPage from '@/pages/NotFoundPage';
 import Onboarding from './pages/Onboarding';
+import TestPage from './pages/Test';
 
 const routes: RouteObject[] = [
   {
-    path: '/',
     element: <RootLayout />,
+    errorElement: <NotFoundPage />,
     children: [
       {
         path: 'login',
@@ -26,20 +27,22 @@ const routes: RouteObject[] = [
           },
         ],
       },
-
-    ],
-    errorElement: <NotFoundPage />,
-  },
-  {
-    path: '/',
-    element: <MainLayout />,
-    children: [
       {
-        element: <ProtectedRoute />,
+        path: '/',
+        element: <MainLayout />,
         children: [
           {
-            index: true,
-            element: <DashboardPage />,
+            element: <ProtectedRoute />,
+            children: [
+              {
+                index: true,
+                element: <DashboardPage />,
+              },
+              {
+                path: "test",
+                element: <TestPage />
+              }
+            ],
           },
         ],
       },

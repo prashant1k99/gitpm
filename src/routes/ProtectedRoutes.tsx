@@ -1,13 +1,13 @@
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import authState from '@/state/auth';
 import { useSignal } from "@preact/signals-react";
 
 export default function ProtectedRoutes() {
-  const authS = useSignal(authState);
+  const authS = useSignal(authState.value);
+  const location = useLocation();
 
-
-  if (!authS.value.value.isAuthenticated) {
-    return <Navigate to="/login" replace />;
+  if (!authS.value.isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
 
   return <Outlet />;
