@@ -16,8 +16,10 @@ import orgState, { IOrganization, loadAllUserOrgs, setActiveOrgForUser } from "@
 import { useSignalEffect } from "@preact/signals-react"
 import { useState } from "react"
 import { Skeleton } from "./ui/skeleton"
+import { useNavigate } from "react-router-dom"
 
 export function OrganizationSwitcher() {
+  const navigate = useNavigate()
   const { isMobile } = useSidebar()
 
   const [orgsLoaded, setOrgsLoaded] = useState(false);
@@ -26,7 +28,6 @@ export function OrganizationSwitcher() {
 
   useSignalEffect(() => {
     if (orgState.value.areOrgLoaded) {
-      console.log("Orgs loaded")
       setOrgsLoaded(true)
       setActiveOrg(orgState.value.activeOrg as IOrganization)
       setOrgs(orgState.value.userOrgs.filter(org => org.id != orgState.value.activeOrg?.id))
@@ -41,6 +42,7 @@ export function OrganizationSwitcher() {
       return
     }
     setActiveOrgForUser(id)
+    navigate("/")
   }
 
   const loadOrgs = () => {
