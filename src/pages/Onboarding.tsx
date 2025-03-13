@@ -81,6 +81,11 @@ export default function Onboarding() {
               )}
               Select Primary Organization
             </Button>
+            <Button variant={"link"} className="cursor-pointer" asChild>
+              <a href="https://github.com/organizations/plan" target="_blank">
+                Create New Organization
+              </a>
+            </Button>
           </CardContent>
         </Card>
       </div>
