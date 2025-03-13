@@ -9,6 +9,7 @@ interface User {
   email: string | null;
   displayName: string | null;
   photoURL: string | null;
+  githubUserName: string;
 }
 
 interface AppState {
@@ -35,11 +36,12 @@ onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
         uid: firebaseUser.uid,
         email: firebaseUser.email,
         displayName: firebaseUser.displayName,
-        photoURL: firebaseUser.photoURL
+        photoURL: firebaseUser.photoURL,
+        githubUserName: firebaseUser.providerId
       },
       firebaseUser: firebaseUser,
       githubToken: null,
-      githubTokenExpired: false
+      githubTokenExpired: false,
     }
   } else {
     authState.value = {
