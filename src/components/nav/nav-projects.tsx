@@ -14,6 +14,10 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
+import { useEffect } from "react"
+import { Project } from "@/services/api/projects"
+import authState from "@/state/auth"
+import orgState from "@/state/organizations"
 
 export function NavProjects({
   items,
@@ -29,6 +33,14 @@ export function NavProjects({
     }[]
   }[]
 }) {
+  useEffect(() => {
+    const projectClient = new Project(authState.value.githubToken as string)
+    projectClient.projects(orgState.value.activeOrg?.login as string).then((data) => {
+      console.log("Projects: ", data)
+    })
+  })
+
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Projects</SidebarGroupLabel>

@@ -1,26 +1,5 @@
+import { IOrganizationQR } from "@/types/organizations";
 import { GithubClient } from "../core/github";
-
-export interface IOrganizationInfo {
-  name: string,
-  avatarUrl: string,
-  login: string,
-  id: string,
-  viewerCanAdminister: boolean
-}
-
-export interface IOrganizationQueryResponse {
-  name: string,
-  email: string,
-  avatarUrl: string,
-  organizations: {
-    totalCount: number,
-    nodes: IOrganizationInfo[]
-  }
-}
-
-export interface IViewer {
-  viewer: IOrganizationQueryResponse
-}
 
 export class Organization {
   private github: GithubClient;
@@ -29,27 +8,38 @@ export class Organization {
     this.github = new GithubClient(authToken)
   }
 
-  get organizations() {
+  organizations(after = "", before = "") {
     const query = `
-      query GetOrganization {
+      query GetOrganization($after: String!, $before: String!) {
         viewer {
-          organizations(first: 30) {
+          organizations(first: 30, after: $after, before: $before) {
             totalCount,
+            pageInfo {
+              hasNextPage
+              endCursor
+              startCursor
+              hasPreviousPage
+            }
             nodes {
               name
               avatarUrl
               login
               id
               viewerCanAdminister
+              viewerCanCreateProjects
+              viewerCanCreateRepositories
             }
           }
         }
       }
     `;
 
-
-
-    return this.github.executeGraph<IViewer>(query)
+    return this.github.executeGraph<{
+      viewer: IOrganizationQR
+    }>(query, {
+      after,
+      before
+    })
   }
 
   organization(name: string) {

@@ -12,24 +12,25 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import orgState, { IOrganization, loadAllUserOrgs, setActiveOrgForUser } from "@/state/organizations"
+import orgState, { loadAllUserOrgs, setActiveOrgForUser } from "@/state/organizations"
 import { useSignalEffect } from "@preact/signals-react"
 import { useState } from "react"
 import { Skeleton } from "./ui/skeleton"
 import { useNavigate } from "react-router-dom"
+import type { TOrganization } from "@/types/organizations"
 
 export function OrganizationSwitcher() {
   const navigate = useNavigate()
   const { isMobile } = useSidebar()
 
   const [orgsLoaded, setOrgsLoaded] = useState(false);
-  const [orgs, setOrgs] = useState<IOrganization[]>([])
-  const [activeOrg, setActiveOrg] = useState<IOrganization>(orgState.value.activeOrg as IOrganization)
+  const [orgs, setOrgs] = useState<TOrganization[]>([])
+  const [activeOrg, setActiveOrg] = useState<TOrganization>(orgState.value.activeOrg as TOrganization)
 
   useSignalEffect(() => {
     if (orgState.value.areOrgLoaded) {
       setOrgsLoaded(true)
-      setActiveOrg(orgState.value.activeOrg as IOrganization)
+      setActiveOrg(orgState.value.activeOrg as TOrganization)
       setOrgs(orgState.value.userOrgs.filter(org => org.id != orgState.value.activeOrg?.id))
     } else {
       setOrgsLoaded(false)
@@ -65,7 +66,7 @@ export function OrganizationSwitcher() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <img className="inline-block size-8 rounded-md" src={activeOrg?.avatar} alt="" />
+                <img className="inline-block size-8 rounded-md" src={activeOrg?.avatarUrl} alt="" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
@@ -83,7 +84,7 @@ export function OrganizationSwitcher() {
             sideOffset={4}
           >
             {
-              activeOrg?.currentUserCanAdminister && (
+              activeOrg?.viewerCanAdminister && (
                 <>
                   <DropdownMenuItem
                     className="gap-2 p-2 "
@@ -106,7 +107,7 @@ export function OrganizationSwitcher() {
                     className="gap-2 p-2"
                   >
                     <div className="flex size-6 items-center justify-center rounded-sm border">
-                      <img className="inline-block size-8 rounded-md w-4 h-4" src={org?.avatar} alt="" />
+                      <img className="inline-block size-8 rounded-md w-4 h-4" src={org?.avatarUrl} alt="" />
                     </div>
                     {org.name}
                   </DropdownMenuItem>

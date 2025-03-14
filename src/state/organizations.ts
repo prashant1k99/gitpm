@@ -1,20 +1,8 @@
 import { effect, signal } from "@preact/signals-react";
 import authState from "./auth";
 import { Organization as OrganizationService } from "@/services/api/organizations";
-
-export interface IOrganization {
-  login: string,
-  name: string,
-  avatar: string,
-  id: string,
-  currentUserCanAdminister: boolean
-}
-
-export interface OrganizationsState {
-  activeOrg: IOrganization | null,
-  userOrgs: IOrganization[],
-  areOrgLoaded: boolean
-}
+import { toast } from "sonner";
+import { OrganizationsState } from "@/types/organizations";
 
 const getActiveOrgFromLocalStorage = (userId: string) => {
   const key = `${userId}:activeOrg`
@@ -48,19 +36,11 @@ export const loadAllUserOrgs = (): Promise<boolean> => new Promise((resolve, rej
   }
   try {
     const orgService = new OrganizationService(authState.value.githubToken);
-    orgService.organizations.then((data) => {
+    orgService.organizations().then((data) => {
       if (data.success) {
         orgState.value = {
           ...orgState.value,
-          userOrgs: data.data.viewer.organizations.nodes.map(org => {
-            return {
-              name: org.name,
-              id: org.id.toString(),
-              currentUserCanAdminister: org.viewerCanAdminister,
-              avatar: org.avatarUrl,
-              login: org.login
-            }
-          }),
+          userOrgs: data.data.viewer.organizations.nodes,
           areOrgLoaded: true
         }
       } else {
@@ -84,6 +64,7 @@ export const setActiveOrgForUser = (id: string) => {
     ...orgState.value,
     activeOrg
   }
+  toast.info(`Switched to ${activeOrg.name}`)
 }
 
 export default orgState
