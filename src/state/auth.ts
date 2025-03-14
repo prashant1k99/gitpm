@@ -62,9 +62,10 @@ export const loadGithubToken = () => new Promise((resolve, reject) => {
     }
     // authState.value.githubToken = githubToken
     resolve("Ok")
-  }).catch((error: string) => {
+  }).catch((error) => {
+    console.log(error)
     toast.error("Something went wrong while fetching", {
-      description: error
+      // description: error
     })
     logUserOut()
     reject()

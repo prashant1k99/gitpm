@@ -1,6 +1,6 @@
 import { setDoc, doc, getDoc } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase"
-import { GithubAuthProvider, signInWithPopup, signOut, UserCredential } from "firebase/auth";
+import { GithubAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 
 const saveKeyToDB = (userId: string, token: string) => new Promise((resolve, reject) => {
   setDoc(doc(db, "userTokens", userId), {
@@ -8,50 +8,39 @@ const saveKeyToDB = (userId: string, token: string) => new Promise((resolve, rej
   }, { merge: true }).then(() => resolve(true)).catch((error) => reject(error))
 })
 
-const githubAuth = (): Promise<boolean> => {
-  return new Promise<boolean>((resolve: (value: boolean) => void, reject: (reason: string) => void) => {
-    const provider = new GithubAuthProvider();
-    provider.addScope('user');
-    provider.addScope('repo');
-    provider.addScope('project');
-    provider.addScope('admin:org');
+const githubAuth = async () => {
+  const provider = new GithubAuthProvider();
+  provider.addScope('user');
+  provider.addScope('repo');
+  provider.addScope('project');
+  provider.addScope('admin:org');
 
-    signInWithPopup(auth, provider)
-      .then(async (result: UserCredential) => {
-        // This gives you a GitHub Access Token. You can use it to access the GitHub API.
-        console.log("Result: ", result);
-        const credential = GithubAuthProvider.credentialFromResult(result);
-        if (!credential) {
-          signOut(auth);
-          return reject("Unable to get Github token");
-        }
-        await saveKeyToDB(result.user.uid, credential.accessToken as string);
-        resolve(true);
-      })
-      .catch((error) => {
-        reject(error.message);
-      });
-  });
+  const result = await signInWithPopup(auth, provider)
+  console.log("Result: ", result);
+  const credential = GithubAuthProvider.credentialFromResult(result);
+  if (!credential) {
+    signOut(auth);
+    throw new Error("Unable to get Github token");
+  }
+  await saveKeyToDB(result.user.uid, credential.accessToken as string);
 }
 
-const getKeyFromDB = (): Promise<string | null> => {
-  return new Promise<string | null>((resolve, reject: (reason: string) => void) => {
-    console.log("Load key from Firestore")
-    const user = auth.currentUser;
+const getKeyFromDB = async () => {
+  console.log("Load key from Firestore")
+  const user = auth.currentUser;
 
-    if (!user) {
-      return reject("User not signed in");
-    }
+  if (!user) {
+    throw new Error("User not signed in")
+  }
 
-    const docRef = doc(db, 'userTokens', user.uid);
-    getDoc(docRef).then((docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        return resolve(data.githubToken || null);
-      }
-      reject("Token not found");
-    }).catch((error) => reject(error.message));
-  });
+  const docRef = doc(db, 'userTokens', user.uid);
+  const docSnap = await getDoc(docRef)
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    return data.githubToken || null
+  } else {
+    throw new Error("Github token not found")
+  }
 }
 
 const logUserOut = () => signOut(auth)

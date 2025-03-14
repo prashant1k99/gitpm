@@ -15,7 +15,7 @@ export default function MainLayout({ children }: { children?: ReactNode }) {
           <div className="flex w-full items-center justify-between gap-2 px-4">
             <div className='flex items-center gap-2'>
               <Link to="/">
-                <img className="inline-block size-8 rounded-md" src="src/assets/logo.png" alt="" />
+                <img className="inline-block size-8 rounded-md" src="/logo.png" alt="" />
               </Link>
               <SidebarTrigger className='xl:hidden' />
             </div>

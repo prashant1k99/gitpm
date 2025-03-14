@@ -2,7 +2,7 @@ import { effect, signal } from "@preact/signals-react";
 import authState from "./auth";
 import { Organization as OrganizationService } from "@/services/api/organizations";
 import { toast } from "sonner";
-import { OrganizationsState } from "@/types/organizations";
+import { IOrganizationsState } from "@/types/organizations";
 
 const getActiveOrgFromLocalStorage = (userId: string) => {
   const key = `${userId}:activeOrg`
@@ -17,7 +17,7 @@ const setActiveOrgToLocalStorage = (userId: string, org: string) => {
   localStorage.setItem(key, org)
 }
 
-const orgState = signal<OrganizationsState>({
+const orgState = signal<IOrganizationsState>({
   activeOrg: null,
   userOrgs: [],
   areOrgLoaded: false

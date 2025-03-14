@@ -23,7 +23,7 @@ export interface IOrganizationQR {
 
 export type TOrganization = TOrganizationInfoQR
 
-export interface OrganizationsState {
+export interface IOrganizationsState {
   activeOrg: TOrganization | null,
   userOrgs: TOrganization[],
   areOrgLoaded: boolean

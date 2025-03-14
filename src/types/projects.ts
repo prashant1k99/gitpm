@@ -30,3 +30,12 @@ export type TProjectV2QR = {
     nodes: IProjectV2ViewQR[]
   }
 }
+
+export type TProject = Omit<TProjectV2QR, "views">
+export interface IProjectState {
+  orgId: string | null
+  paginationInfo: IPageInfo | null,
+  areLoading: boolean
+  loadedProject: TProject[]
+}
+

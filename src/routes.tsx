@@ -6,7 +6,8 @@ import DashboardPage from '@/pages/Dashboard';
 import AuthPage from '@/pages/AuthPage';
 import NotFoundPage from '@/pages/NotFoundPage';
 import Onboarding from './pages/Onboarding';
-import TestPage from './pages/Test';
+import ProjectsPage from './pages/ProjectsPage';
+import ProjectDetailPage from './pages/ProjectDetailPage';
 
 const routes: RouteObject[] = [
   {
@@ -40,8 +41,17 @@ const routes: RouteObject[] = [
                 element: <DashboardPage />,
               },
               {
-                path: "test",
-                element: <TestPage />
+                path: "project",
+                children: [
+                  {
+                    index: true,
+                    element: <ProjectsPage />,
+                  },
+                  {
+                    path: ":projectNumber",
+                    element: <ProjectDetailPage />
+                  }
+                ]
               }
             ],
           },

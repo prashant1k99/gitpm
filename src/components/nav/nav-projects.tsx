@@ -1,4 +1,4 @@
-import { ChevronRight, type LucideIcon } from "lucide-react"
+import { ChevronRight, MoreHorizontal } from "lucide-react"
 import {
   Collapsible,
   CollapsibleContent,
@@ -14,55 +14,66 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
-import { useEffect } from "react"
-import { Project } from "@/services/api/projects"
-import authState from "@/state/auth"
-import orgState from "@/state/organizations"
+import { useState } from "react"
+import projectState, { loadProjects } from "@/state/projects"
+import { Skeleton } from "../ui/skeleton"
+import { useSignalEffect } from "@preact/signals-react"
+import { Link, useParams } from "react-router-dom"
+import { TProject } from "@/types/projects"
 
-export function NavProjects({
-  items,
-}: {
-  items: {
-    title: string
-    url: string
-    icon?: LucideIcon
-    isActive?: boolean
-    items?: {
-      title: string
-      url: string
-    }[]
-  }[]
-}) {
-  useEffect(() => {
-    const projectClient = new Project(authState.value.githubToken as string)
-    projectClient.projects(orgState.value.activeOrg?.login as string).then((data) => {
-      console.log("Projects: ", data)
-    })
+const subItem = [{
+  title: "History",
+  url: "#",
+},
+{
+  title: "Starred",
+  url: "#",
+},
+{
+  title: "Settings",
+  url: "#",
+},]
+
+export function NavProjects() {
+  const [isLoadingProjects, setIsLoading] = useState<boolean>(projectState.value.areLoading)
+  const [hasMoreProjectsToLoad, setHasMoreProjectsToLoad] = useState<boolean>(projectState.value.paginationInfo?.hasNextPage || false)
+  const [projects, setProjects] = useState<TProject[]>([])
+
+  const { projectNumber } = useParams();
+
+  useSignalEffect(() => {
+    if (projectState.value.areLoading) {
+      setIsLoading(true)
+    } else {
+      setIsLoading(false)
+      setProjects(projectState.value.loadedProject)
+      setHasMoreProjectsToLoad(projectState.value.paginationInfo?.hasNextPage as boolean)
+    }
   })
-
 
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Projects</SidebarGroupLabel>
       <SidebarMenu>
-        {items.map((item) => (
+        {projects.map((item) => (
           <Collapsible
             key={item.title}
             asChild
-            defaultOpen={item.isActive}
+            defaultOpen={item.number.toString() == projectNumber}
             className="group/collapsible"
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton tooltip={item.title}>
-                  {item.icon && <item.icon />}
-                  <span>{item.title}</span>
+                  <Link to={"/project/" + item.number}>
+                    <span>{item.title}</span>
+                  </Link>
                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                 </SidebarMenuButton>
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <SidebarMenuSub>
-                  {item.items?.map((subItem) => (
+                  {subItem.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
                       <SidebarMenuSubButton asChild>
                         <a href={subItem.url}>
@@ -76,7 +87,20 @@ export function NavProjects({
             </SidebarMenuItem>
           </Collapsible>
         ))}
+        {isLoadingProjects && (
+          <>
+            <Skeleton className="w-full h-8" />
+            <Skeleton className="w-full h-8" />
+            <Skeleton className="w-full h-8" />
+          </>
+        )}
+        {hasMoreProjectsToLoad && (
+          <SidebarMenuButton onClick={loadProjects} disabled={isLoadingProjects} className="text-sidebar-foreground/70 cursor-pointer">
+            <MoreHorizontal className="text-sidebar-foreground/70" />
+            <span>More</span>
+          </SidebarMenuButton>
+        )}
       </SidebarMenu>
-    </SidebarGroup>
+    </SidebarGroup >
   )
 }

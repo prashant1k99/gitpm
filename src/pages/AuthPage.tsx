@@ -55,7 +55,7 @@ export default function AuthPage() {
         <Card>
           <CardHeader className="text-center">
             <CardTitle className="flex flex-col justify-center items-center text-2xl gap-2">
-              <img src='/src/assets/logo.png' alt='GitPM Logo' className='w-16 h-16' />
+              <img src='/logo.png' alt='GitPM Logo' className='w-16 h-16' />
               <h1>
                 Welcome To GitPM
               </h1>
