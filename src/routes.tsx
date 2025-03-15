@@ -9,6 +9,7 @@ import Onboarding from './pages/Onboarding';
 import ProjectsPage from './pages/ProjectsPage';
 import ProjectDetailPage from './pages/ProjectDetailPage';
 import ViewPage from './pages/ViewPage';
+import OrgSettingPage from './pages/OrgSettingPage';
 
 const routes: RouteObject[] = [
   {
@@ -62,6 +63,10 @@ const routes: RouteObject[] = [
                     ]
                   }
                 ]
+              },
+              {
+                path: "settings",
+                element: <OrgSettingPage />
               }
             ],
           },

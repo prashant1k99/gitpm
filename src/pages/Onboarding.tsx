@@ -69,7 +69,7 @@ export default function Onboarding() {
               <SelectContent>
                 {orgState.value.userOrgs.map((org) => (
                   <SelectItem key={org.id} value={org.id}>
-                    <img className="inline-block size-6 rounded-md" src={org.avatar} alt="" />
+                    <img className="inline-block size-6 rounded-md" src={org.avatarUrl} alt="" />
                     {org.name}
                   </SelectItem>
                 ))}

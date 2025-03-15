@@ -16,7 +16,7 @@ import orgState, { loadAllUserOrgs, setActiveOrgForUser } from "@/state/organiza
 import { useSignalEffect } from "@preact/signals-react"
 import { useState } from "react"
 import { Skeleton } from "./ui/skeleton"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import type { TOrganization } from "@/types/organizations"
 
 export function OrganizationSwitcher() {
@@ -85,7 +85,7 @@ export function OrganizationSwitcher() {
           >
             {
               activeOrg?.viewerCanAdminister && (
-                <>
+                <Link to={"/settings"}>
                   <DropdownMenuItem
                     className="gap-2 p-2 "
                   >
@@ -95,7 +95,7 @@ export function OrganizationSwitcher() {
                     Settings
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                </>
+                </Link>
               )
             }
             {orgsLoaded ? (
