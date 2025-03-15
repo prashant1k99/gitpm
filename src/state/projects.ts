@@ -4,6 +4,7 @@ import { Project } from "@/services/api/projects";
 import authState from "./auth";
 import { toast } from "sonner";
 import { IProjectState } from "@/types/projects";
+import { addLoadedViewsToProject, ILoadViewsForProjects } from "./views";
 
 const projectState = signal<IProjectState>({
   orgId: null,
@@ -44,6 +45,19 @@ export const loadProjects = (): Promise<boolean> => new Promise((resolve, reject
           paginationInfo: data.data.viewer.organization.projectsV2.pageInfo,
           loadedProject: [...projectState.value.loadedProject, ...data.data.viewer.organization.projectsV2.nodes]
         }
+
+        const viewsForProjects: ILoadViewsForProjects[] = []
+        data.data.viewer.organization.projectsV2.nodes.forEach((project) => {
+          viewsForProjects.push({
+            project: project.number,
+            views: project.views.nodes,
+            pageInfo: project.views.pageInfo,
+            totalCount: project.views.totalCount
+          })
+        })
+
+        addLoadedViewsToProject(viewsForProjects);
+
         return resolve(true)
       } else {
         return reject("Something went wrong")

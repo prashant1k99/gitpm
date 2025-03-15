@@ -3,9 +3,8 @@ import { IPageInfo, IViewLayout } from "./common"
 export interface IProjectV2ViewQR {
   id: string,
   number: number,
-  title: string,
+  name: string,
   layout: IViewLayout,
-  filter: string,
 }
 
 export type TProjectV2QR = {

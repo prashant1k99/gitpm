@@ -10,9 +10,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import { useState } from "react"
 import projectState, { loadProjects } from "@/state/projects"
@@ -20,19 +17,7 @@ import { Skeleton } from "../ui/skeleton"
 import { useSignalEffect } from "@preact/signals-react"
 import { Link, useParams } from "react-router-dom"
 import { TProject } from "@/types/projects"
-
-const subItem = [{
-  title: "History",
-  url: "#",
-},
-{
-  title: "Starred",
-  url: "#",
-},
-{
-  title: "Settings",
-  url: "#",
-},]
+import { NavViews } from "./nav-views"
 
 export function NavProjects() {
   const [isLoadingProjects, setIsLoading] = useState<boolean>(projectState.value.areLoading)
@@ -72,17 +57,7 @@ export function NavProjects() {
                 </SidebarMenuButton>
               </CollapsibleTrigger>
               <CollapsibleContent>
-                <SidebarMenuSub>
-                  {subItem.map((subItem) => (
-                    <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
-                        <a href={subItem.url}>
-                          <span>{subItem.title}</span>
-                        </a>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  ))}
-                </SidebarMenuSub>
+                <NavViews project={item.number} baseLink={"/project/" + item.number} />
               </CollapsibleContent>
             </SidebarMenuItem>
           </Collapsible>

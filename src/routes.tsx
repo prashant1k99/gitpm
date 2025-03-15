@@ -8,6 +8,7 @@ import NotFoundPage from '@/pages/NotFoundPage';
 import Onboarding from './pages/Onboarding';
 import ProjectsPage from './pages/ProjectsPage';
 import ProjectDetailPage from './pages/ProjectDetailPage';
+import ViewPage from './pages/ViewPage';
 
 const routes: RouteObject[] = [
   {
@@ -49,7 +50,16 @@ const routes: RouteObject[] = [
                   },
                   {
                     path: ":projectNumber",
-                    element: <ProjectDetailPage />
+                    children: [
+                      {
+                        index: true,
+                        element: <ProjectDetailPage />
+                      },
+                      {
+                        path: ":viewNumber",
+                        element: <ViewPage />
+                      }
+                    ]
                   }
                 ]
               }
