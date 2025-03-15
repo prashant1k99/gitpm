@@ -1,4 +1,4 @@
-query GetViews($login: String!, $projectNumber: Int! $after: String!, $before: String!) {
+query GetViews($login: String!, $projectNumber: Int!, $after: String!, $before: String!) {
   viewer {
     organization(login: $login) {
       projectV2(number: $projectNumber) {

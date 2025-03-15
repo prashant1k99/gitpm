@@ -78,6 +78,7 @@ export const loadViewsForProject = async (projectNumber: number) => {
       }
       return
     } else {
+      console.log(data.errors)
       throw new Error(data.errors[0])
     }
   } catch (error) {
@@ -90,6 +91,7 @@ export const loadViewsForProject = async (projectNumber: number) => {
       toast.error(error.name, {
         description: error.message
       })
+      return
     }
     toast.error('Something went wrong', {
       description: 'Try again later'

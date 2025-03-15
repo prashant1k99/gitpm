@@ -17,17 +17,17 @@ export const hasMoreProjectsToLoad = () => computed(() => projectState.value.pag
 
 export const isLoadingProjects = () => computed(() => projectState.value.areLoading)
 
-export const loadProjects = (): Promise<boolean> => new Promise((resolve, reject) => {
+export const loadProjects = async () => {
   // check if the app needs to load additional or the first 
   const projectService = new Project(authState.value.githubToken as string);
   if (!orgState.value.activeOrg) {
     toast.error("Unable to load projects", {
       description: "Active Organization not selected"
     })
-    return reject("Another problem")
+    return
   }
   if (projectState.value.areLoading) {
-    return resolve(true)
+    return
   }
   const after = projectState.value.paginationInfo?.endCursor || ""
   try {
@@ -35,34 +35,34 @@ export const loadProjects = (): Promise<boolean> => new Promise((resolve, reject
       ...projectState.value,
       areLoading: true
     }
-    projectService.projects(orgState.value.activeOrg.login, after).then((data) => {
-      if (data.success) {
-        // Something went wrong
-        projectState.value = {
-          ...projectState.value,
-          orgId: orgState.value.activeOrg?.id as string,
-          areLoading: false,
-          paginationInfo: data.data.viewer.organization.projectsV2.pageInfo,
-          loadedProject: [...projectState.value.loadedProject, ...data.data.viewer.organization.projectsV2.nodes]
-        }
-
-        const viewsForProjects: ILoadViewsForProjects[] = []
-        data.data.viewer.organization.projectsV2.nodes.forEach((project) => {
-          viewsForProjects.push({
-            project: project.number,
-            views: project.views.nodes,
-            pageInfo: project.views.pageInfo,
-            totalCount: project.views.totalCount
-          })
-        })
-
-        addLoadedViewsToProject(viewsForProjects);
-
-        return resolve(true)
-      } else {
-        return reject("Something went wrong")
+    const data = await projectService.projects(orgState.value.activeOrg.login, after)
+    if (data.success) {
+      // Something went wrong
+      projectState.value = {
+        ...projectState.value,
+        orgId: orgState.value.activeOrg?.id as string,
+        areLoading: false,
+        paginationInfo: data.data.viewer.organization.projectsV2.pageInfo,
+        loadedProject: [...projectState.value.loadedProject, ...data.data.viewer.organization.projectsV2.nodes]
       }
-    })
+
+      const viewsForProjects: ILoadViewsForProjects[] = []
+      data.data.viewer.organization.projectsV2.nodes.forEach((project) => {
+        viewsForProjects.push({
+          project: project.number,
+          views: project.views.nodes,
+          pageInfo: project.views.pageInfo,
+          totalCount: project.views.totalCount
+        })
+      })
+
+      addLoadedViewsToProject(viewsForProjects);
+
+      return
+    } else {
+      console.log(data.errors)
+      throw new Error(data.errors[0])
+    }
   } catch (error) {
     console.error(error)
     projectState.value = {
@@ -73,11 +73,13 @@ export const loadProjects = (): Promise<boolean> => new Promise((resolve, reject
       toast.error(error.name, {
         description: error.message
       })
-      return reject(error.message)
+      return
     }
-    return reject("Something went wrong")
+    toast.error("Something went wrong", {
+      description: "Try again later"
+    })
   }
-})
+}
 
 effect(() => {
   // If organization is changed, clear all the projects as they are form current organization
