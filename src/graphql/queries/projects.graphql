@@ -1,0 +1,44 @@
+query GetProjects($login: String!, $after: String!, $before: String!) {
+  viewer {
+    organization(login: $login) {
+      projectsV2(first: 20, after: $after, before: $before) {
+        totalCount
+        pageInfo {
+          hasNextPage
+          endCursor
+          startCursor
+          hasPreviousPage
+        }
+        nodes {
+          readme
+          id
+          shortDescription
+          number
+          viewerCanClose
+          viewerCanUpdate
+          title
+          template
+          views(first: 10) {
+            totalCount
+            pageInfo {
+              hasNextPage
+              endCursor
+              startCursor
+              hasPreviousPage
+            }
+            nodes {
+              layout
+              number
+              id
+              name
+              filter
+            }
+          }
+          viewerCanUpdate
+          viewerCanClose
+          viewerCanReopen
+        }
+      }
+    }
+  }
+}

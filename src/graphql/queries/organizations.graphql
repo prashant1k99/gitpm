@@ -1,0 +1,22 @@
+query GetOrganization($after: String!, $before: String!) {
+  viewer {
+    organizations(first: 30, after: $after, before: $before) {
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+        startCursor
+        hasPreviousPage
+      }
+      nodes {
+        name
+        avatarUrl
+        login
+        id
+        viewerCanAdminister
+        viewerCanCreateProjects
+        viewerCanCreateRepositories
+      }
+    }
+  }
+}

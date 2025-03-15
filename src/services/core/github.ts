@@ -1,4 +1,5 @@
 import { Octokit, RequestError } from "octokit";
+import { DocumentNode, print } from "graphql";
 
 interface SuccessResponse<T> {
   success: true;
@@ -13,7 +14,6 @@ interface ErrorResponse {
 
 type QueryResponse<T> = SuccessResponse<T> | ErrorResponse;
 
-
 export class GithubClient {
   private octokit: Octokit;
 
@@ -24,12 +24,14 @@ export class GithubClient {
   }
 
   async executeGraph<T>(
-    query: string,
-    parameters: Record<string, string> = {}
+    query: string | DocumentNode,
+    parameters: Record<string, unknown> = {}
   ): Promise<QueryResponse<T>> {
     try {
-      const response = await this.octokit.graphql<T>(query, parameters);
-      console.log(response)
+      // Convert DocumentNode to string if needed
+      const queryString = typeof query === 'string' ? query : print(query);
+
+      const response = await this.octokit.graphql<T>(queryString, parameters);
       return {
         success: true,
         data: response
