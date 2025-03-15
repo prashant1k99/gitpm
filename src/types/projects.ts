@@ -1,10 +1,4 @@
-import { IPageInfo } from "./common"
-
-export enum IViewLayout {
-  TABLE_LAYOUT = "TABLE_LAYOUT",
-  ROADMAP_LAYOUT = "ROADMAP_LAYOUT",
-  BOARD_LAYOUT = "BOARD_LAYOUT"
-}
+import { IPageInfo, IViewLayout } from "./common"
 
 export interface IProjectV2ViewQR {
   id: string,

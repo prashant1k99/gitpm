@@ -65,21 +65,17 @@ export const loadProjects = (): Promise<boolean> => new Promise((resolve, reject
   }
 })
 
-const clearProjectState = () => {
-  projectState.value = {
-    orgId: null,
-    areLoading: false,
-    paginationInfo: null,
-    loadedProject: []
-  }
-}
-
 effect(() => {
   // If organization is changed, clear all the projects as they are form current organization
   if (orgState.value.activeOrg?.id !== untracked(() => projectState.value.orgId) && authState.value.githubToken) {
     // Need to put project related changes in unstrack as it could lead to circular error
     untracked(() => {
-      clearProjectState()
+      projectState.value = {
+        orgId: null,
+        areLoading: false,
+        paginationInfo: null,
+        loadedProject: []
+      }
       loadProjects()
     })
   }
