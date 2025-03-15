@@ -6,3 +6,8 @@ export interface IView {
   name: string
   layout: IViewLayout
 }
+
+export interface IViewInfo {
+  project: number
+  views: IView[]
+}
