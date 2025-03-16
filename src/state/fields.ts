@@ -1,1 +1,87 @@
-// We need to store the fields such a way that we can fetch them based on the project Id
+import { effect, signal, untracked } from "@preact/signals-react";
+import orgState from "./organizations";
+import { IFieldState } from "@/types/fields";
+import authState from "./auth";
+import { toast } from "sonner";
+import { Field } from "@/services/api/fields";
+
+const fieldState = signal<IFieldState>({
+  orgId: null,
+  isLoadingFieldsForProject: null,
+  fields: {}
+})
+
+effect(() => {
+  if (orgState.value.activeOrg && orgState.value.activeOrg.id != fieldState.peek().orgId) {
+    untracked(() => {
+      fieldState.value = {
+        orgId: orgState.value.activeOrg?.id as string,
+        isLoadingFieldsForProject: null,
+        fields: {}
+      }
+    })
+  }
+})
+
+export const loadFieldsForProject = async (projectNumber: number) => {
+  if (!authState.value.githubToken) {
+    toast.error("Github Token not found", {
+      description: "Try again later"
+    })
+    return
+  }
+  if (!orgState.value.activeOrg) {
+    toast.error("Unable to load projects", {
+      description: "Active Organization not selected"
+    })
+    return
+  }
+  if (fieldState.value.isLoadingFieldsForProject) {
+    return
+  }
+  const after = fieldState.value.fields?.[projectNumber].pageInfo.endCursor || ""
+  try {
+    fieldState.value = {
+      ...fieldState.value,
+      isLoadingFieldsForProject: projectNumber
+    }
+    const fieldService = new Field(authState.value.githubToken)
+    const {
+      totalCount,
+      fields,
+      pageInfo
+    } = await fieldService.allFieldsForProject({
+      orgLogin: orgState.value.activeOrg.login,
+      projectNumber,
+      after
+    })
+    fieldState.value = {
+      orgId: orgState.value.activeOrg.id,
+      isLoadingFieldsForProject: null,
+      fields: {
+        ...fieldState.value.fields,
+        [projectNumber]: {
+          pageInfo,
+          totalCount,
+          fields
+        }
+      }
+    }
+  } catch (error) {
+    fieldState.value = {
+      ...fieldState.value,
+      isLoadingFieldsForProject: null
+    }
+    if (error instanceof Error) {
+      toast.error(error.name, {
+        description: error.message
+      })
+      return
+    }
+    toast.error("Something went wrong", {
+      description: "Try again later"
+    })
+  }
+}
+
+export default fieldState

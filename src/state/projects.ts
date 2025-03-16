@@ -4,7 +4,8 @@ import { Project } from "@/services/api/projects";
 import authState from "./auth";
 import { toast } from "sonner";
 import { IProjectState } from "@/types/projects";
-import { addLoadedViewsToProject, ILoadViewsForProjects } from "./views";
+import { addLoadedViewsToProject } from "./views";
+import { ILoadViewsForProjects } from "@/types/views";
 
 const projectState = signal<IProjectState>({
   orgId: null,

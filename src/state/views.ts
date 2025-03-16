@@ -1,7 +1,5 @@
 import { View } from "@/services/api/views";
-import { IPageInfo } from "@/types/common";
-import { IProjectV2ViewQR } from "@/types/projects";
-import { IViewInfo, IViewsInfo, IViewState } from "@/types/views";
+import { ILoadViewsForProjects, IViewInfo, IViewsInfo, IViewState } from "@/types/views";
 import { signal } from "@preact/signals-react";
 import projectState from "./projects";
 import authState from "./auth";
@@ -12,13 +10,6 @@ const viewState = signal<IViewState>({
   isLoadingViewsForProject: null,
   views: {},
 })
-
-export interface ILoadViewsForProjects {
-  project: number,
-  views: IProjectV2ViewQR[],
-  pageInfo: IPageInfo,
-  totalCount: number
-}
 
 export const addLoadedViewsToProject = (data: ILoadViewsForProjects[]) => {
   const newViews = data.reduce((acc, item) => ({

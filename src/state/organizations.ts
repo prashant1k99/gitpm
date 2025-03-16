@@ -30,27 +30,39 @@ effect(() => {
   }
 })
 
-export const loadAllUserOrgs = (): Promise<boolean> => new Promise((resolve, reject) => {
+export const loadAllUserOrgs = async () => {
   if (!authState.value.githubToken) {
-    return resolve(false)
+    toast.error("Github Token not loaded yet", {
+      description: "Please try again later"
+    })
+    return
   }
   try {
     const orgService = new OrganizationService(authState.value.githubToken);
-    orgService.organizations().then((data) => {
-      if (data.success) {
-        orgState.value = {
-          ...orgState.value,
-          userOrgs: data.data.viewer.organizations.nodes,
-          areOrgLoaded: true
-        }
-      } else {
-        reject(data.errors[0])
+    const data = await orgService.organizations()
+    if (data.success) {
+      orgState.value = {
+        ...orgState.value,
+        userOrgs: data.data.viewer.organizations.nodes,
+        areOrgLoaded: true
       }
-    })
+      return
+    } else {
+      throw new Error(data.errors[0])
+    }
   } catch (error) {
-    reject(error)
+    if (error instanceof Error) {
+      toast.error(error.name, {
+        description: error.message
+      })
+      return
+    }
+    toast.error("Something went wrong", {
+      description: "Please try again later"
+    })
+    return
   }
-})
+}
 
 export const setActiveOrgForUser = (id: string) => {
   const activeOrg = orgState.value.userOrgs.find((org) => org.id == id)

@@ -1,3 +1,5 @@
+import { IPageInfo } from "./common";
+
 export enum DataType {
   ASSIGNEES = 'ASSIGNEES',
   DATE = 'DATE',
@@ -56,3 +58,18 @@ export interface IIterationFieldQR extends IProjectV2CommonField {
 }
 
 export type IProjectV2Field = IProjectV2CommonField | ISingleSelectFieldQR | IIterationFieldQR;
+
+export interface IField {
+  pageInfo: IPageInfo
+  totalCount: number
+  fields: IProjectV2Field[]
+}
+
+export interface IFieldState {
+  orgId: string | null,
+  isLoadingFieldsForProject: number | null
+  fields: {
+    [projectNumber: string]: IField
+  }
+}
+

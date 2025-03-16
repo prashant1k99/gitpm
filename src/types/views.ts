@@ -19,3 +19,10 @@ export interface IViewState {
   isLoadingViewsForProject: number | null // To show which project's views are loading
   views: IViewsInfo | null
 }
+
+export interface ILoadViewsForProjects {
+  project: number,
+  views: IProjectV2ViewQR[],
+  pageInfo: IPageInfo,
+  totalCount: number
+}
