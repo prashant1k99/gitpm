@@ -23,7 +23,10 @@ effect(() => {
   }
 })
 
-export const loadFieldsForProject = async (projectNumber: number) => {
+export const loadAllFieldsForProject = async (projectNumber: number) => {
+  if (fieldState.value.fields?.[projectNumber]) {
+    return fieldState.value.fields?.[projectNumber]
+  }
   if (!authState.value.githubToken) {
     toast.error("Github Token not found", {
       description: "Try again later"
@@ -39,7 +42,6 @@ export const loadFieldsForProject = async (projectNumber: number) => {
   if (fieldState.value.isLoadingFieldsForProject) {
     return
   }
-  const after = fieldState.value.fields?.[projectNumber].pageInfo.endCursor || ""
   try {
     fieldState.value = {
       ...fieldState.value,
@@ -53,7 +55,6 @@ export const loadFieldsForProject = async (projectNumber: number) => {
     } = await fieldService.allFieldsForProject({
       orgLogin: orgState.value.activeOrg.login,
       projectNumber,
-      after
     })
     fieldState.value = {
       orgId: orgState.value.activeOrg.id,
@@ -67,6 +68,8 @@ export const loadFieldsForProject = async (projectNumber: number) => {
         }
       }
     }
+    console.log("state: ", fields)
+    return fields
   } catch (error) {
     fieldState.value = {
       ...fieldState.value,
