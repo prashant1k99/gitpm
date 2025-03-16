@@ -1,0 +1,51 @@
+query GetFieldsForProject($orgLogin: String!, $projectNumber: Int!, $after: String!, $before: String!) {
+  viewer {
+    organization (login: $orgLogin) {
+      projectV2 (number: $projectNumber) {
+        fields (first: 20, after: $after, before: $before) {
+          totalCount
+          pageInfo {
+            hasNextPage
+            endCursor
+            hasPreviousPage
+            startCursor
+          }
+          nodes {
+            ... on ProjectV2FieldCommon {
+              __typename
+              id
+              name
+              dataType
+            }
+            ... on ProjectV2IterationField {
+              configuration {
+                duration
+                startDay
+                iterations {
+                  ... Iteration
+                }
+                completedIterations {
+                  ... Iteration
+                }
+              }
+            }
+            ... on ProjectV2SingleSelectField {
+              options {
+                color
+                id
+                name
+                description
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+fragment Iteration on ProjectV2IterationFieldIteration {
+  duration
+  id
+  startDate
+  title
+}

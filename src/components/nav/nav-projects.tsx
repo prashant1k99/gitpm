@@ -1,4 +1,4 @@
-import { ChevronRight, MoreHorizontal } from "lucide-react"
+import { ChevronRight, FolderDot, FolderOpenDot, MoreHorizontal } from "lucide-react"
 import {
   Collapsible,
   CollapsibleContent,
@@ -50,7 +50,9 @@ export function NavProjects() {
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton tooltip={item.title}>
-                  <Link to={"/project/" + item.number}>
+                  <FolderDot className="group-data-[state=open]/collapsible:hidden" />
+                  <FolderOpenDot className="hidden group-data-[state=open]/collapsible:inline" />
+                  <Link to={`/project/${item.number}`}>
                     <span>{item.title}</span>
                   </Link>
                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />

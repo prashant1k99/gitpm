@@ -55,7 +55,7 @@ export function NavViews({
       {views.map((view) => (
         <SidebarMenuSubItem key={view.name}>
           <SidebarMenuSubButton asChild>
-            <Link to={baseLink + "/" + view.number}>
+            <Link to={`${baseLink}/${view.number}`} >
               {(() => {
                 const Icon = layoutIcons[view.layout] || Table2;
                 return <Icon className="w-4 h-4 mr-2" />;

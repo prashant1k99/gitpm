@@ -8,6 +8,7 @@ export type TOrganizationInfoQR = {
   viewerCanAdminister: boolean
   viewerCanCreateProjects: boolean
   viewerCanCreateRepositories: boolean
+  viewerCanCreateTeams: boolean
 }
 
 export interface IOrganizationQR {

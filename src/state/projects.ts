@@ -37,17 +37,24 @@ export const loadProjects = async () => {
     }
     const data = await projectService.projects(orgState.value.activeOrg.login, after)
     if (data.success) {
-      // Something went wrong
+      const projectQueryData = data.data.viewer.organization.projectsV2
+      const projectMap = new Map(
+        projectState.value.loadedProject.map(project => [project.number, project])
+      )
+
+      projectQueryData.nodes.map((project) => [project.number, project])
+
       projectState.value = {
         ...projectState.value,
         orgId: orgState.value.activeOrg?.id as string,
         areLoading: false,
-        paginationInfo: data.data.viewer.organization.projectsV2.pageInfo,
-        loadedProject: [...projectState.value.loadedProject, ...data.data.viewer.organization.projectsV2.nodes]
+        paginationInfo: projectQueryData.pageInfo,
+        loadedProject: Array.from(projectMap.values()),
       }
 
+      // For Saving preloaded views for there respective projects
       const viewsForProjects: ILoadViewsForProjects[] = []
-      data.data.viewer.organization.projectsV2.nodes.forEach((project) => {
+      projectQueryData.nodes.forEach((project) => {
         viewsForProjects.push({
           project: project.number,
           views: project.views.nodes,

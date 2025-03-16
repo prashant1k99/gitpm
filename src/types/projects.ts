@@ -15,8 +15,8 @@ export type TProjectV2QR = {
   readme: string,
   template: boolean,
   viewerCanClose: boolean,
-  viewerCanReopem: boolean,
-  viewerCanUpdatre: boolean,
+  viewerCanReopen: boolean,
+  viewerCanUpdate: boolean,
   views: {
     totalCount: number,
     pageInfo: IPageInfo,
@@ -25,6 +25,7 @@ export type TProjectV2QR = {
 }
 
 export type TProject = Omit<TProjectV2QR, "views">
+
 export interface IProjectState {
   orgId: string | null
   paginationInfo: IPageInfo | null,

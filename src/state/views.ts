@@ -60,17 +60,21 @@ export const loadViewsForProject = async (projectNumber: number) => {
     const data = await viewService.views(orgState.value.activeOrg.login, projectNumber, after)
     if (data.success) {
       const viewsData = data.data.viewer.organization.projectV2.views
-      const currentViews = viewState.value.views?.[projectNumber]?.views || []
+
+      const viewMap = new Map(
+        (viewState.value.views?.[projectNumber]?.views || []).map(view => [view.number, view])
+      )
+
+      viewsData.nodes.forEach(view => {
+        viewMap.set(view.number, view)
+      })
 
       viewState.value = {
         views: {
           ...viewState.value.views,
           [projectNumber]: {
             pageInfo: viewsData.pageInfo,
-            views: [
-              ...currentViews,
-              ...viewsData.nodes
-            ],
+            views: Array.from(viewMap.values()),
             totalCount: viewsData.totalCount
           }
         },
