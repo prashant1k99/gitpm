@@ -42,7 +42,7 @@ export const loadProjects = async () => {
         projectState.value.loadedProject.map(project => [project.number, project])
       )
 
-      projectQueryData.nodes.map((project) => [project.number, project])
+      projectQueryData.nodes.forEach((project) => projectMap.set(project.number, project))
 
       projectState.value = {
         ...projectState.value,
