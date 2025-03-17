@@ -20,7 +20,7 @@ export default function Onboarding() {
   const navigate = useNavigate();
 
   useSignalEffect(() => {
-    if (orgState.value.activeOrg) {
+    if (orgState.value.activeOrg?.id) {
       navigate("/")
     }
     if (orgState.value.areOrgLoaded) {
@@ -56,7 +56,7 @@ export default function Onboarding() {
         <Card>
           <CardHeader className="text-center">
             <CardTitle className="flex flex-col justify-center items-center text-2xl gap-2">
-              <img src='/src/assets/logo.png' alt='GitPM Logo' className='w-16 h-16' />
+              <img src='/logo.png' alt='GitPM Logo' className='w-16 h-16' />
               <h1>Connect organization with GitPM</h1>
             </CardTitle>
             <CardDescription>This organization will be set as Actibe Organization for performing operations. You can switch it from the app when you want to switch in between organizations</CardDescription>

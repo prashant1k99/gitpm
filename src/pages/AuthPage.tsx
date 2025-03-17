@@ -1,52 +1,56 @@
 import { Button } from "@/components/ui/button"
-import authState, { loadGithubToken } from "@/state/auth";
 import { useSignalEffect } from "@preact/signals-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Github, LoaderCircle } from 'lucide-react';
-import { useState } from "react";
+import { Github } from 'lucide-react';
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { githubAuth } from "@/utils/auth";
+import account from "@/lib/appwrite";
+import { OAuthProvider } from "appwrite";
+import authState from "@/state/auth";
 import orgState from "@/state/organizations";
 
 export default function AuthPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [navigateTo, setNavigateTo] = useState("/");
 
   useSignalEffect(() => {
-    // handle the loading of github token here and give feedback to user
     if (authState.value.isAuthenticated) {
-      if (authState.value.githubToken) {
-        if (orgState.value.activeOrg) {
-          const to = location.state?.from || '/';
-          navigate(to, { replace: true });
-        } else {
-          navigate("/onboarding")
-        }
+      if (orgState.value.activeOrg) {
+        const to = location.state?.from || '/';
+        navigate(to, { replace: true });
       } else {
-        setIsProcessing(true)
-        toast.success("Authenticated Successfully", {
-          description: "Loading github token"
-        })
-        loadGithubToken().finally(() => {
-          setIsProcessing(false)
-        })
+        navigate("/onboarding")
       }
     }
   })
 
-  const authenticateUser = () => {
-    setIsProcessing(true)
-
-    githubAuth().then(() => {
-      console.log("Successfully saved token")
-    }).catch((error) => {
-      toast.error("Failed to Authenitcate", {
-        description: error.message
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const errorParams = params.get("error")
+    if (errorParams) {
+      const errorContent = JSON.parse(errorParams) as {
+        message: string,
+      }
+      toast.error("Unable to Authenticate", {
+        description: errorContent.message
       })
-    }).finally(() => setIsProcessing(false))
+    }
+    const fromParam = params.get("from")
+    if (fromParam) {
+      setNavigateTo(fromParam)
+    }
+  }, []);
+
+  const authUserWithAppWrite = () => {
+    account.createOAuth2Session(
+      OAuthProvider.Github, // provider
+      `http://localhost:5173${navigateTo}`, // redirect here on success
+      'http://localhost:5173/login', // redirect here on failure
+      ['repo', 'user', 'admin:org', 'org', 'project'] // scopes (optional)
+    );
   }
 
   return (
@@ -65,12 +69,8 @@ export default function AuthPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button disabled={isProcessing} className="cursor-pointer w-full" onClick={authenticateUser}>
-              {isProcessing ? (
-                <LoaderCircle className="w-4 h-4 animate-spin" />
-              ) : (
-                <Github className="w-4 h-4" />
-              )}
+            <Button className="cursor-pointer w-full" onClick={authUserWithAppWrite}>
+              <Github className="w-4 h-4" />
               Sign In With Github
             </Button>
           </CardContent>

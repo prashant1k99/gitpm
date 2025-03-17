@@ -1,8 +1,6 @@
+import account from "@/lib/appwrite";
+import { User as UserService } from "@/services/api/user";
 import { signal } from "@preact/signals-react";
-import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth'
-import { auth } from '@/lib/firebase';
-import { getKeyFromDB, logUserOut } from "@/utils/auth";
-import { toast } from "sonner";
 
 interface User {
   uid: string;
@@ -15,61 +13,45 @@ interface User {
 interface AppState {
   isAuthenticated: boolean;
   user: User | null;
-  firebaseUser: FirebaseUser | null;
   githubToken: string | null;
-  githubTokenExpired: boolean;
 }
 
 const authState = signal<AppState>({
   isAuthenticated: false,
   user: null,
-  firebaseUser: null,
   githubToken: null,
-  githubTokenExpired: false
 })
 
-onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
-  if (firebaseUser) {
+export const loadUser = async () => {
+  try {
+    const session = await account.getSession("current");
+
+    const userService = new UserService(session.providerAccessToken);
+
+    const userData = await userService.self
+
+    if (userData.status != 200) {
+      await account.deleteSession("current")
+      throw new Error("Failed to fetch data")
+    }
+
     authState.value = {
       isAuthenticated: true,
       user: {
-        uid: firebaseUser.uid,
-        email: firebaseUser.email,
-        displayName: firebaseUser.displayName,
-        photoURL: firebaseUser.photoURL,
-        githubUserName: firebaseUser.providerId
+        uid: session.providerUid,
+        email: userData.data.email,
+        displayName: userData.data.name,
+        photoURL: userData.data.avatar_url,
+        githubUserName: userData.data.login
       },
-      firebaseUser: firebaseUser,
-      githubToken: null,
-      githubTokenExpired: false,
+      githubToken: session.providerAccessToken
     }
-  } else {
-    authState.value = {
-      isAuthenticated: false,
-      user: null,
-      firebaseUser: null,
-      githubToken: null,
-      githubTokenExpired: false
-    }
-  }
-})
 
-export const loadGithubToken = () => new Promise((resolve, reject) => {
-  getKeyFromDB().then((githubToken) => {
-    authState.value = {
-      ...authState.value,
-      githubToken: githubToken
-    }
-    // authState.value.githubToken = githubToken
-    resolve("Ok")
-  }).catch((error) => {
+    return true
+  } catch (error) {
     console.log(error)
-    toast.error("Something went wrong while fetching", {
-      // description: error
-    })
-    logUserOut()
-    reject()
-  })
-})
+    return false
+  }
+}
 
 export default authState

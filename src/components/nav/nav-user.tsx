@@ -29,7 +29,7 @@ import authState from "@/state/auth"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { toast } from "sonner"
-import { logUserOut } from "@/utils/auth"
+import account from "@/lib/appwrite"
 
 export function NavUser() {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -37,7 +37,7 @@ export function NavUser() {
   const navigator = useNavigate()
   const singOutUser = () => {
     setIsProcessing(true)
-    logUserOut().then(() => {
+    account.deleteSession("current").then(() => {
       navigator("/login")
     }).catch((error) => {
       console.log(error);

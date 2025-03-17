@@ -1,7 +1,6 @@
-import { createBrowserRouter, RouteObject } from 'react-router-dom';
+import { createBrowserRouter, Outlet, redirect, RouteObject } from 'react-router-dom';
 import RootLayout from '@/layout/RootLayout';
 import MainLayout from '@/layout/MainLayout';
-import ProtectedRoute from '@/routes/ProtectedRoutes';
 import DashboardPage from '@/pages/Dashboard';
 import AuthPage from '@/pages/AuthPage';
 import NotFoundPage from '@/pages/NotFoundPage';
@@ -10,33 +9,61 @@ import ProjectsPage from './pages/ProjectsPage';
 import ProjectDetailPage from './pages/ProjectDetailPage';
 import ViewPage from './pages/ViewPage';
 import OrgSettingPage from './pages/OrgSettingPage';
+import { loadUser } from './state/auth';
+import orgState from './state/organizations';
 
 const routes: RouteObject[] = [
   {
-    path: "/",
     element: <RootLayout />,
     errorElement: <NotFoundPage />,
     children: [
       {
         path: 'login',
         element: <AuthPage />,
-      },
-      {
-        path: 'onboarding',
-        element: <ProtectedRoute />,
-        children: [
-          {
-            index: true,
-            element: <Onboarding />,
-          },
-        ],
+        loader: async () => {
+          const isAuthenticated = await loadUser()
+          if (isAuthenticated) {
+            return redirect('/')
+          } else {
+            return
+          }
+        },
+
       },
       {
         path: '/',
-        element: <MainLayout />,
+        loader: async () => {
+          const isAuthenticated = await loadUser()
+          if (isAuthenticated) {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get("from")) {
+              return redirect(params.get("from") as string)
+            }
+            return <Outlet />
+          } else {
+            const redirectTo = `/login?from=${location.pathname}`
+            return redirect(redirectTo)
+          }
+        },
         children: [
           {
-            element: <ProtectedRoute />,
+            path: 'onboarding',
+            element: <RootLayout />,
+            children: [
+              {
+                index: true,
+                element: <Onboarding />,
+              },
+            ],
+          },
+          {
+            loader: () => {
+              if (!orgState.value.activeOrg) {
+                return redirect("/onboarding")
+              }
+              return null
+            },
+            element: <MainLayout />,
             children: [
               {
                 index: true,
