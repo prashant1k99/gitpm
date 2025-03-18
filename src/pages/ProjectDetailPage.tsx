@@ -9,7 +9,7 @@ export default function ProjectDetailPage() {
     loadAllFieldsForProject(Number(projectNumber)).then((data) => {
       console.log(data)
     })
-  })
+  }, [])
 
   return (
     <div>

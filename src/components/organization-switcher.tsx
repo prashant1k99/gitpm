@@ -38,7 +38,6 @@ export function OrganizationSwitcher() {
   })
 
   const switchOrg = (id: string) => {
-    console.log("Switch to: ", id)
     if (id == activeOrg?.id) {
       return
     }

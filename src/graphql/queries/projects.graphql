@@ -18,22 +18,7 @@ query GetProjects($login: String!, $after: String!, $before: String!) {
           viewerCanUpdate
           title
           template
-          views(first: 10) {
-            totalCount
-            pageInfo {
-              hasNextPage
-              endCursor
-              startCursor
-              hasPreviousPage
-            }
-            nodes {
-              layout
-              number
-              id
-              name
-              filter
-            }
-          }
+          updatedAt
           viewerCanUpdate
           viewerCanClose
           viewerCanReopen

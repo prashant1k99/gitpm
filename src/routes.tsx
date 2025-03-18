@@ -39,7 +39,7 @@ const routes: RouteObject[] = [
             if (params.get("from")) {
               return redirect(params.get("from") as string)
             }
-            return <Outlet />
+            return null
           } else {
             const redirectTo = `/login?from=${location.pathname}`
             return redirect(redirectTo)
@@ -55,6 +55,11 @@ const routes: RouteObject[] = [
                 element: <Onboarding />,
               },
             ],
+            loader: () => {
+              if (orgState.value.activeOrg) {
+                return redirect("/")
+              }
+            }
           },
           {
             loader: () => {

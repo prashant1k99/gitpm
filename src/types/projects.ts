@@ -1,11 +1,4 @@
-import { IPageInfo, IViewLayout } from "./common"
-
-export interface IProjectV2ViewQR {
-  id: string,
-  number: number,
-  name: string,
-  layout: IViewLayout,
-}
+import { IPageInfo } from "./common"
 
 export type TProjectV2QR = {
   id: string,
@@ -17,11 +10,7 @@ export type TProjectV2QR = {
   viewerCanClose: boolean,
   viewerCanReopen: boolean,
   viewerCanUpdate: boolean,
-  views: {
-    totalCount: number,
-    pageInfo: IPageInfo,
-    nodes: IProjectV2ViewQR[]
-  }
+  updatedAt: string,
 }
 
 export type TProject = Omit<TProjectV2QR, "views">

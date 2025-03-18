@@ -4,8 +4,6 @@ import { Project } from "@/services/api/projects";
 import authState from "./auth";
 import { toast } from "sonner";
 import { IProjectState } from "@/types/projects";
-import { addLoadedViewsToProject } from "./views";
-import { ILoadViewsForProjects } from "@/types/views";
 
 const projectState = signal<IProjectState>({
   orgId: null,
@@ -36,6 +34,7 @@ export const loadProjects = async () => {
       ...projectState.value,
       areLoading: true
     }
+
     const data = await projectService.projects(orgState.value.activeOrg.login, after)
     if (data.success) {
       const projectQueryData = data.data.viewer.organization.projectsV2
@@ -52,19 +51,6 @@ export const loadProjects = async () => {
         paginationInfo: projectQueryData.pageInfo,
         loadedProject: Array.from(projectMap.values()),
       }
-
-      // For Saving preloaded views for there respective projects
-      const viewsForProjects: ILoadViewsForProjects[] = []
-      projectQueryData.nodes.forEach((project) => {
-        viewsForProjects.push({
-          project: project.number,
-          views: project.views.nodes,
-          pageInfo: project.views.pageInfo,
-          totalCount: project.views.totalCount
-        })
-      })
-
-      addLoadedViewsToProject(viewsForProjects);
 
       return
     } else {

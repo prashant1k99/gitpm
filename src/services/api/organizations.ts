@@ -17,4 +17,14 @@ export class Organization {
       before
     })
   }
+
+  orgs() {
+    return this.github.paginate(this.github.rest.orgs.listForAuthenticatedUser)
+  }
+
+  orgInfo(name: string) {
+    return this.github.rest.orgs.get({
+      org: name
+    })
+  }
 }
