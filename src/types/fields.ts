@@ -57,12 +57,12 @@ export interface IIterationFieldQR extends IProjectV2CommonField {
   configuration: IIterationConfig;
 }
 
-export type IProjectV2Field = IProjectV2CommonField | ISingleSelectFieldQR | IIterationFieldQR;
+export type TProjectV2Field = IProjectV2CommonField | ISingleSelectFieldQR | IIterationFieldQR;
 
 export interface IField {
   pageInfo: IPageInfo
   totalCount: number
-  fields: IProjectV2Field[]
+  fields: TProjectV2Field[]
 }
 
 export interface IFieldState {

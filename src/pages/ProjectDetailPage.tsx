@@ -1,4 +1,5 @@
 import { loadAllFieldsForProject } from "@/state/fields";
+import { loadItemsForProject } from "@/state/items";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
@@ -6,10 +7,10 @@ export default function ProjectDetailPage() {
   const { projectNumber } = useParams();
 
   useEffect(() => {
-    loadAllFieldsForProject(Number(projectNumber)).then((data) => {
-      console.log(data)
+    loadAllFieldsForProject(Number(projectNumber)).then(() => {
+      loadItemsForProject(Number(projectNumber))
     })
-  }, [])
+  }, [projectNumber])
 
   return (
     <div>

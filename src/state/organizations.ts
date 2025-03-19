@@ -1,4 +1,4 @@
-import { effect, signal } from "@preact/signals-react";
+import { effect, signal, untracked } from "@preact/signals-react";
 import authState from "./auth";
 import { Organization as OrganizationService } from "@/services/api/organizations";
 import { toast } from "sonner";
@@ -24,9 +24,14 @@ const orgState = signal<IOrganizationsState>({
 })
 
 effect(() => {
-  if (authState.value.user) {
-    const activeOrg = getActiveOrgFromLocalStorage(authState.value.user.uid as string)
-    orgState.value.activeOrg = activeOrg
+  if (authState.value.user && authState.value.user.uid != undefined) {
+    untracked(() => {
+      const activeOrg = getActiveOrgFromLocalStorage(authState.value.user?.uid as string)
+      orgState.value = {
+        ...orgState.value,
+        activeOrg
+      }
+    })
   }
 })
 

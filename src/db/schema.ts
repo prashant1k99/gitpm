@@ -1,3 +1,10 @@
+import { TProjectV2Field } from "@/types/fields";
+import {
+  ItemType as TasksType,
+  ItemContent as TaskContent,
+  ProjectV2ItemFieldValue as TasksFieldValue
+} from "@/types/items"
+
 export interface Project {
   id: string;
   number: number;
@@ -6,7 +13,6 @@ export interface Project {
   readme: string;
   isTemplate: boolean;
   updatedAt: Date;
-  orgLogin: string;
 }
 
 export enum IViewLayout {
@@ -28,16 +34,8 @@ export interface View {
   updatedAt: Date;
 }
 
-export interface Field {
-  id?: number;
-  projectId: number; // Foreign key to Project
-  name: string;
-  type: string; // e.g., 'text', 'number', 'select', 'date'
-  options?: string; // Options for this field
-  defaultValue?: string;
-  isRequired: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+export type Field = TProjectV2Field & {
+  projectId: number
 }
 
 export type ItemType = "Tasks" | "Project" | "Field" | "Organization"
@@ -46,7 +44,6 @@ export interface Permissions {
   permissionFor: ItemType;
   permissionKey: string;
   permissionStatus: boolean;
-  orgLogin: string;
 }
 
 export interface Favourites {
@@ -56,7 +53,6 @@ export interface Favourites {
   itemParentId: string;
   itemType: ItemType;
   index: number;
-  orgLogin: string;
 }
 
 export interface PageInfo {
@@ -67,5 +63,21 @@ export interface PageInfo {
   endCursor: string;
   hasPreviousPage: boolean;
   startCursor: string;
-  orgLogin: string;
+}
+
+export interface Tasks {
+  id: string
+  projectId: number,
+  isArchived: boolean
+  type: TasksType
+  updatedAt: Date
+  fields: TasksFieldValue[],
+  content: TaskContent,
+  permissions: {
+    viewerCanClose: boolean
+    viewerCanDelete: boolean
+    viewerCanLabel: boolean
+    viewerCanReopen: boolean
+    viewerCanUpdate: boolean
+  }
 }

@@ -1,4 +1,4 @@
-import { createBrowserRouter, Outlet, redirect, RouteObject } from 'react-router-dom';
+import { createBrowserRouter, redirect, RouteObject } from 'react-router-dom';
 import RootLayout from '@/layout/RootLayout';
 import MainLayout from '@/layout/MainLayout';
 import DashboardPage from '@/pages/Dashboard';
@@ -10,7 +10,6 @@ import ProjectDetailPage from './pages/ProjectDetailPage';
 import ViewPage from './pages/ViewPage';
 import OrgSettingPage from './pages/OrgSettingPage';
 import { loadUser } from './state/auth';
-import orgState from './state/organizations';
 
 const routes: RouteObject[] = [
   {
@@ -23,22 +22,21 @@ const routes: RouteObject[] = [
         loader: async () => {
           const isAuthenticated = await loadUser()
           if (isAuthenticated) {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get("from")) {
+              return redirect(params.get("from") as string)
+            }
             return redirect('/')
           } else {
-            return
+            return null
           }
         },
-
       },
       {
         path: '/',
         loader: async () => {
           const isAuthenticated = await loadUser()
           if (isAuthenticated) {
-            const params = new URLSearchParams(window.location.search);
-            if (params.get("from")) {
-              return redirect(params.get("from") as string)
-            }
             return null
           } else {
             const redirectTo = `/login?from=${location.pathname}`
@@ -55,19 +53,9 @@ const routes: RouteObject[] = [
                 element: <Onboarding />,
               },
             ],
-            loader: () => {
-              if (orgState.value.activeOrg) {
-                return redirect("/")
-              }
-            }
           },
           {
-            loader: () => {
-              if (!orgState.value.activeOrg) {
-                return redirect("/onboarding")
-              }
-              return null
-            },
+            // Need to find a way to validate the current path for activeOrg selection
             element: <MainLayout />,
             children: [
               {
