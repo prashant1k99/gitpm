@@ -11,7 +11,7 @@ import DB from '@/db/organization'
 const fieldState = signal<IFieldState>({
   orgId: null,
   isLoadingFieldsForProject: null,
-  fields: {},
+  loadedProjects: []
 })
 
 effect(() => {
@@ -23,16 +23,13 @@ effect(() => {
       fieldState.value = {
         orgId: orgState.value.activeOrg?.id as string,
         isLoadingFieldsForProject: null,
-        fields: {},
+        loadedProjects: []
       }
     })
   }
 })
 
 export const loadAllFieldsForProject = async (projectNumber: number) => {
-  if (fieldState.value.fields?.[projectNumber]) {
-    return fieldState.value.fields?.[projectNumber]
-  }
   if (!authState.value.githubToken) {
     toast.error('Github Token not found', {
       description: 'Try again later',
@@ -45,6 +42,11 @@ export const loadAllFieldsForProject = async (projectNumber: number) => {
     })
     return
   }
+  const db = DB.getDatabases(orgState.value.activeOrg.login)
+
+  if (fieldState.value.loadedProjects.includes(projectNumber)) {
+    return db.projects.where("projectId").equals(projectNumber).toArray()
+  }
   if (fieldState.value.isLoadingFieldsForProject) {
     return
   }
@@ -54,9 +56,8 @@ export const loadAllFieldsForProject = async (projectNumber: number) => {
       isLoadingFieldsForProject: projectNumber,
     }
 
-    const db = DB.getDatabases(orgState.value.activeOrg.login)
     const fieldService = new Field(authState.value.githubToken)
-    const { totalCount, fields, pageInfo } =
+    const { fields } =
       await fieldService.allFieldsForProject({
         orgLogin: orgState.value.activeOrg.login,
         projectNumber,
@@ -68,18 +69,14 @@ export const loadAllFieldsForProject = async (projectNumber: number) => {
         ...field
       })
     })
-    console.log(db.fields.toArray())
+
     fieldState.value = {
       orgId: orgState.value.activeOrg.id,
       isLoadingFieldsForProject: null,
-      fields: {
-        ...fieldState.value.fields,
-        [projectNumber]: {
-          pageInfo,
-          totalCount,
-          fields,
-        },
-      },
+      loadedProjects: [
+        ...fieldState.value.loadedProjects,
+        projectNumber
+      ]
     }
 
     return fields

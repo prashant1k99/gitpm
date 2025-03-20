@@ -228,11 +228,4 @@ export interface I_ItemState {
   orgLogin: string | null,
   isLoading: boolean,
   loadedProjects: number[],
-  items: {
-    [key: number]: {
-      pageInfo: IPageInfo,
-      totalCount: number,
-      items: I_ItemInfo[]
-    }
-  }
 }

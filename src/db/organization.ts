@@ -1,11 +1,11 @@
 import Dexie, { Table } from 'dexie';
-import { Favourites, Field, PageInfo, Permissions, Tasks, View } from './schema';
+import { Favourites, Field, PageInfo, Tasks, View } from './schema';
+import { TProjectV2QR } from '@/types/projects';
 
 export class OrganizationDB extends Dexie {
-  // projects!: Table<Project>;
+  projects!: Table<TProjectV2QR>;
   views!: Table<View>;
   fields!: Table<Field>;
-  permissions!: Table<Permissions>;
   favourites!: Table<Favourites>;
   pageInfo!: Table<PageInfo>;
   tasks!: Table<Tasks>;
@@ -14,10 +14,9 @@ export class OrganizationDB extends Dexie {
     super(orgName);
 
     this.version(1).stores({
-      // projects: 'id, orgLogin, number',
+      projects: 'id',
       views: 'id, number, projectId, layout',
       fields: 'id, projectId',
-      permissions: '++id, permissionFor',
       favourites: '++id, itemType',
       pageInfo: '++id, itemType, itemId',
       tasks: "id, projectId"

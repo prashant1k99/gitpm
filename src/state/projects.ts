@@ -1,20 +1,15 @@
-import { computed, effect, signal, untracked } from "@preact/signals-react";
+import { effect, signal, untracked } from "@preact/signals-react";
 import orgState from "./organizations";
 import { Project } from "@/services/api/projects";
 import authState from "./auth";
 import { toast } from "sonner";
 import { IProjectState } from "@/types/projects";
+import DB from "@/db/organization";
 
 const projectState = signal<IProjectState>({
   orgId: null,
-  areLoading: false,
-  paginationInfo: null,
-  loadedProject: []
+  isLoading: false,
 })
-
-export const hasMoreProjectsToLoad = () => computed(() => projectState.value.paginationInfo?.hasNextPage)
-
-export const isLoadingProjects = () => computed(() => projectState.value.areLoading)
 
 export const loadProjects = async () => {
   // check if the app needs to load additional or the first 
@@ -25,43 +20,34 @@ export const loadProjects = async () => {
     })
     return
   }
-  if (projectState.value.areLoading) {
-    return
-  }
-  const after = projectState.value.paginationInfo?.endCursor || ""
   try {
     projectState.value = {
       ...projectState.value,
-      areLoading: true
+      isLoading: true
     }
 
-    const data = await projectService.projects(orgState.value.activeOrg.login, after)
-    if (data.success) {
-      const projectQueryData = data.data.viewer.organization.projectsV2
-      const projectMap = new Map(
-        projectState.value.loadedProject.map(project => [project.number, project])
-      )
+    const db = DB.getDatabases(orgState.value.activeOrg.login)
 
-      projectQueryData.nodes.forEach((project) => projectMap.set(project.number, project))
+    const {
+      projects,
+    } = await projectService.getAllProjects({
+      orgLogin: orgState.value.activeOrg.login
+    })
 
-      projectState.value = {
-        ...projectState.value,
-        orgId: orgState.value.activeOrg?.id as string,
-        areLoading: false,
-        paginationInfo: projectQueryData.pageInfo,
-        loadedProject: Array.from(projectMap.values()),
-      }
-
-      return
-    } else {
-      console.log(data.errors)
-      throw new Error(data.errors[0])
+    projectState.value = {
+      ...projectState.value,
+      orgId: orgState.value.activeOrg?.id as string,
+      isLoading: false,
     }
+
+    projects.map(project => {
+      db.projects.put(project)
+    })
   } catch (error) {
     console.error(error)
     projectState.value = {
       ...projectState.value,
-      areLoading: false
+      isLoading: false
     }
     if (error instanceof Error) {
       toast.error(error.name, {
@@ -82,9 +68,7 @@ effect(() => {
     untracked(() => {
       projectState.value = {
         orgId: null,
-        areLoading: false,
-        paginationInfo: null,
-        loadedProject: []
+        isLoading: false,
       }
       loadProjects()
     })

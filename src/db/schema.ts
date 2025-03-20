@@ -40,12 +40,6 @@ export type Field = TProjectV2Field & {
 
 export type ItemType = "Tasks" | "Project" | "Field" | "Organization"
 
-export interface Permissions {
-  permissionFor: ItemType;
-  permissionKey: string;
-  permissionStatus: boolean;
-}
-
 export interface Favourites {
   id?: number;
   itemId: string;

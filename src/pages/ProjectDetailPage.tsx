@@ -24,7 +24,7 @@ export default function ProjectDetailPage() {
 
   const items = useLiveQuery(() => {
     const db = DB.getDatabases(orgLogin)
-    return db.tasks.where("projectId").equals(Number(projectNumber)).toArray()
+    return db.tasks.where("projectId").equals(Number(projectNumber)).reverse().sortBy("updatedAt")
   }, [orgLogin, projectNumber])
 
   return (
@@ -34,7 +34,7 @@ export default function ProjectDetailPage() {
       </h1>
       {items?.map((item) => {
         return (
-          <p key={item.id}>{item.content.title}</p>
+          <p key={item.id}>{item.content.title} - {item.content.body}</p>
         )
       })}
     </div>

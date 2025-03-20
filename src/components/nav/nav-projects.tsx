@@ -1,4 +1,4 @@
-import { ChevronRight, FolderDot, FolderOpenDot, MoreHorizontal } from "lucide-react"
+import { ChevronRight, FolderDot, FolderOpenDot } from "lucide-react"
 import {
   Collapsible,
   CollapsibleContent,
@@ -12,71 +12,76 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { useState } from "react"
-import projectState, { loadProjects } from "@/state/projects"
+import projectState from "@/state/projects"
 import { Skeleton } from "../ui/skeleton"
 import { useSignalEffect } from "@preact/signals-react"
 import { Link, useParams } from "react-router-dom"
-import { TProject } from "@/types/projects"
 import { NavViews } from "./nav-views"
+import { useLiveQuery } from "dexie-react-hooks"
+import orgState from "@/state/organizations"
+import DB from "@/db/organization"
 
 export function NavProjects() {
-  const [isLoadingProjects, setIsLoading] = useState<boolean>(projectState.value.areLoading)
-  const [hasMoreProjectsToLoad, setHasMoreProjectsToLoad] = useState<boolean>(projectState.value.paginationInfo?.hasNextPage || false)
-  const [projects, setProjects] = useState<TProject[]>([])
+  const [orgLogin, setOrgLogin] = useState(orgState.value.activeOrg?.login)
+  const [isLoading, setIsLoading] = useState(true)
 
-  const { projectNumber } = useParams();
+  const projects = useLiveQuery(() => {
+    const db = DB.getDatabases(orgState.value.activeOrg?.login as string)
+    return db.projects.toArray()
+  }, [orgLogin])
 
   useSignalEffect(() => {
-    if (projectState.value.areLoading) {
+    if (orgState.value.activeOrg) {
+      setOrgLogin(orgState.value.activeOrg.login)
+    }
+  })
+
+  useSignalEffect(() => {
+    if (projectState.value.isLoading) {
       setIsLoading(true)
     } else {
       setIsLoading(false)
-      setProjects(projectState.value.loadedProject)
-      setHasMoreProjectsToLoad(projectState.value.paginationInfo?.hasNextPage as boolean)
     }
   })
+
+  const { projectNumber } = useParams();
 
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Projects</SidebarGroupLabel>
       <SidebarMenu>
-        {projects.map((item) => (
-          <Collapsible
-            key={item.title}
-            asChild
-            defaultOpen={item.number.toString() == projectNumber}
-            className="group/collapsible"
-          >
-            <SidebarMenuItem>
-              <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.title}>
-                  <FolderDot className="group-data-[state=open]/collapsible:hidden" />
-                  <FolderOpenDot className="hidden group-data-[state=open]/collapsible:inline" />
-                  <Link to={`/project/${item.number}`}>
-                    <span>{item.title}</span>
-                  </Link>
-                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                </SidebarMenuButton>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <NavViews project={item.number} baseLink={"/project/" + item.number} />
-              </CollapsibleContent>
-            </SidebarMenuItem>
-          </Collapsible>
-        ))}
-        {isLoadingProjects && (
+        {(isLoading && projects?.length == 0) ? (
           <>
             <Skeleton className="w-full h-8" />
             <Skeleton className="w-full h-8" />
             <Skeleton className="w-full h-8" />
           </>
-        )}
-        {hasMoreProjectsToLoad && (
-          <SidebarMenuButton onClick={loadProjects} disabled={isLoadingProjects} className="text-sidebar-foreground/70 cursor-pointer">
-            <MoreHorizontal className="text-sidebar-foreground/70" />
-            <span>More</span>
-          </SidebarMenuButton>
-        )}
+        ) : (
+          projects?.map((item) => (
+            <Collapsible
+              key={item.title}
+              asChild
+              defaultOpen={item.number.toString() == projectNumber}
+              className="group/collapsible"
+            >
+              <SidebarMenuItem>
+                <CollapsibleTrigger asChild>
+                  <SidebarMenuButton tooltip={item.title}>
+                    <FolderDot className="group-data-[state=open]/collapsible:hidden" />
+                    <FolderOpenDot className="hidden group-data-[state=open]/collapsible:inline" />
+                    <Link to={`/project/${item.number}`}>
+                      <span>{item.title}</span>
+                    </Link>
+                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <NavViews project={item.number} baseLink={"/project/" + item.number} />
+                </CollapsibleContent>
+              </SidebarMenuItem>
+            </Collapsible>
+          )))
+        }
       </SidebarMenu>
     </SidebarGroup >
   )

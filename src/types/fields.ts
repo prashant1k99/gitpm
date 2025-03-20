@@ -67,9 +67,7 @@ export interface IField {
 
 export interface IFieldState {
   orgId: string | null,
-  isLoadingFieldsForProject: number | null
-  fields: {
-    [projectNumber: string]: IField
-  }
+  isLoadingFieldsForProject: number | null,
+  loadedProjects: number[]
 }
 
