@@ -1,11 +1,4 @@
 import * as React from "react"
-import {
-  Frame,
-  Map,
-  PieChart,
-} from "lucide-react"
-
-import { NavDiscussions } from "@/components/nav/nav-discussions"
 import { NavUser } from "@/components/nav/nav-user"
 import {
   Sidebar,
@@ -16,26 +9,6 @@ import {
 } from "@/components/ui/sidebar"
 import { NavProjects } from "@/components/nav/nav-projects"
 import { OrganizationSwitcher } from "./organization-switcher"
-// This is sample data.
-const data = {
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
-}
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -45,7 +18,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavProjects />
-        <NavDiscussions projects={data.projects} />
+        {/* <NavDiscussions projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
         <NavUser />
