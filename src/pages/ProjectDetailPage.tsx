@@ -4,12 +4,12 @@ import { loadItemsForProject } from "@/state/items";
 import orgState from "@/state/organizations";
 import { useSignalEffect } from "@preact/signals-react";
 import { useLiveQuery } from 'dexie-react-hooks';
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 export default function ProjectDetailPage() {
-  const [orgLogin, setOrgLogin] = useState<string>(orgState.value.activeOrg?.login || "")
   const { projectNumber } = useParams();
+  let db = DB.getDatabases(orgState.value.activeOrg?.login as string)
 
   useEffect(() => {
     loadAllFieldsForProject(Number(projectNumber)).then(() => {
@@ -18,14 +18,33 @@ export default function ProjectDetailPage() {
   }, [projectNumber])
 
   useSignalEffect(() => {
-    if (orgState.value.activeOrg?.login)
-      setOrgLogin(orgState.value.activeOrg?.login)
+    if (orgState.value.activeOrg?.login) {
+      db = DB.getDatabases(orgState.value.activeOrg?.login as string)
+    }
   })
 
   const items = useLiveQuery(() => {
-    const db = DB.getDatabases(orgLogin)
     return db.tasks.where("projectId").equals(Number(projectNumber)).reverse().sortBy("updatedAt")
-  }, [orgLogin, projectNumber])
+  }, [projectNumber])
+
+  const fields = useLiveQuery(() => {
+    return db.fields.where("projectId").equals(Number(projectNumber)).toArray()
+  }, [projectNumber])
+
+
+  const assignees = useLiveQuery(async () => {
+    const items = await db.tasks.where("projectId").equals(Number(projectNumber)).toArray()
+
+    // Extract unique assignees
+    const uniqueAssignees = new Map<string, { name: string, id: string }>();
+    items.map(item => {
+      console.log(item.fields)
+      item.content.assignees?.nodes?.forEach(assignee => {
+        uniqueAssignees.set(assignee.id, assignee)
+      });
+    });
+    return Array.from(uniqueAssignees.values());
+  })
 
   return (
     <div>
@@ -37,6 +56,25 @@ export default function ProjectDetailPage() {
           <p key={item.id}>{item.content.title} - {item.content.body}</p>
         )
       })}
+
+      <h1>Assignees:</h1>
+      {assignees?.map(assignee => (
+        <p key={assignee.id}>
+          {assignee.name}
+        </p>
+      ))}
+
+      <br />
+      <br />
+      <h1>Fields</h1>
+      {fields?.map((field) => (
+        <div key={field.id}>
+          <p>{field.name} - {field.dataType} </p>
+          {JSON.stringify(field, null, 2)}
+          <br />
+          <br />
+        </div>
+      ))}
     </div>
   )
 }
