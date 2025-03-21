@@ -1,7 +1,8 @@
 import { GithubClient } from "../core/github";
 import fieldQuery from "@/graphql/queries/fields.graphql";
 import { IPageInfo } from "@/types/common";
-import { IProjectV2Field } from "@/types/fields";
+import { TProjectV2Field, TProjectV2FieldQR } from "@/types/fields";
+import { transformFieldNameForQuery } from "./utils/generateItemsQuery";
 
 export class Field {
   private github: GithubClient;
@@ -28,7 +29,7 @@ export class Field {
             fields: {
               totalCount: number,
               pageInfo: IPageInfo,
-              nodes: IProjectV2Field[]
+              nodes: TProjectV2Field[]
             }
           }
         }
@@ -52,7 +53,7 @@ export class Field {
     after?: string,
     before?: string
   }) {
-    const fields: IProjectV2Field[] = []
+    const fields: TProjectV2Field[] = []
     let pageInfo: IPageInfo = {
       hasNextPage: false,
       hasPreviousPage: false,
@@ -70,7 +71,7 @@ export class Field {
               fields: {
                 totalCount: number,
                 pageInfo: IPageInfo,
-                nodes: IProjectV2Field[]
+                nodes: TProjectV2FieldQR[]
               }
             }
           }
@@ -87,7 +88,15 @@ export class Field {
         hasMorePages = queryResponse.pageInfo.hasNextPage
         after = data.data.viewer.organization.projectV2.fields.pageInfo.endCursor
 
-        fields.push(...data.data.viewer.organization.projectV2.fields.nodes)
+        fields.push(
+          ...queryResponse.nodes.map((field) => {
+            const fieldQueryName = transformFieldNameForQuery(field.name)
+            return {
+              ...field,
+              fieldQueryName
+            }
+          })
+        )
         pageInfo = queryResponse.pageInfo
         totalCount = queryResponse.totalCount
       } else {

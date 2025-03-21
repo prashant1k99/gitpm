@@ -2,7 +2,7 @@ import { TProjectV2Field } from "@/types/fields";
 import {
   ItemType as TasksType,
   ItemContent as TaskContent,
-  ProjectV2ItemFieldValue as TasksFieldValue
+  ProjectV2ItemFieldValue
 } from "@/types/items"
 
 export interface Project {
@@ -65,7 +65,9 @@ export interface Tasks {
   isArchived: boolean
   type: TasksType
   updatedAt: Date
-  fields: TasksFieldValue[],
+  fields: {
+    [key: string]: ProjectV2ItemFieldValue
+  },
   content: TaskContent,
   permissions: {
     viewerCanClose: boolean

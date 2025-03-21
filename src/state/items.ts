@@ -43,13 +43,13 @@ export const loadItemsForProject = async (projectNumber: number) => {
       isLoading: true,
     }
     const itemService = new ItemService(authState.value.githubToken)
-    const fieldCount = await db.fields.where("projectId").equals(projectNumber).count() || 20
+    const fields = await db.fields.where("projectId").equals(projectNumber).toArray()
 
     const { items } =
       await itemService.allItemsForProject({
         orgLogin: orgState.value.activeOrg.login,
         projectNumber,
-        fieldCount,
+        fields,
       })
     items.map((item) => {
       const defaultPermissions = {
@@ -80,7 +80,7 @@ export const loadItemsForProject = async (projectNumber: number) => {
         ...item,
         projectId: projectNumber,
         updatedAt: new Date(item.updatedAt),
-        fields: item.fieldValues.nodes,
+        fields: item.fields,
         content: item.content,
         permissions: permissions,
       })

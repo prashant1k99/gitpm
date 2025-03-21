@@ -1,7 +1,9 @@
 import { GithubClient } from "../core/github";
 import { IPageInfo } from "@/types/common";
-import itemsQuery from "@/graphql/queries/items.graphql"
-import { I_ItemInfo } from "@/types/items";
+import { I_ItemQR, TItemInfo } from "@/types/items";
+import { processItemResponse } from "./utils/processItemResponse";
+import { TProjectV2Field } from "@/types/fields";
+import { generateItemsQuery } from "./utils/generateItemsQuery";
 
 export class ItemService {
   private github: GithubClient;
@@ -10,59 +12,22 @@ export class ItemService {
     this.github = new GithubClient(authToken)
   }
 
-  items({
-    orgLogin,
-    projectNumber,
-    fieldCount = 10,
-    itemCount = 20,
-    after = "",
-    before = ""
-  }: {
-    orgLogin: string,
-    projectNumber: number,
-    fieldCount?: number,
-    itemCount?: number,
-    after?: string,
-    before?: string
-  }) {
-    return this.github.executeGraph<{
-      viewer: {
-        organization: {
-          projectV2: {
-            items: {
-              totalCount: number,
-              pageInfo: IPageInfo,
-              nodes: I_ItemInfo[]
-            }
-          }
-        }
-      }
-    }>(itemsQuery, {
-      orgLogin,
-      projectNumber,
-      itemCount,
-      fieldCount,
-      after,
-      before
-    })
-  }
-
   async allItemsForProject({
     orgLogin,
     projectNumber,
-    fieldCount = 10,
+    fields,
     itemCount = 20,
     after = "",
     before = ""
   }: {
     orgLogin: string,
     projectNumber: number,
-    fieldCount?: number,
+    fields: TProjectV2Field[]
     itemCount?: number,
     after?: string,
     before?: string
   }) {
-    const items: I_ItemInfo[] = []
+    const items: TItemInfo[] = []
     let pageInfo: IPageInfo = {
       hasNextPage: false,
       hasPreviousPage: false,
@@ -71,26 +36,15 @@ export class ItemService {
     }
     let totalCount: number = 0
 
+    const generatedDynQuery = generateItemsQuery(fields)
+
     let hasMorePages: boolean = true
     while (hasMorePages) {
       const count: number = (totalCount > 0) ? totalCount - items.length : itemCount;
-      const data = await this.github.executeGraph<{
-        viewer: {
-          organization: {
-            projectV2: {
-              items: {
-                totalCount: number,
-                pageInfo: IPageInfo,
-                nodes: I_ItemInfo[]
-              }
-            }
-          }
-        }
-      }>(itemsQuery, {
+      const data = await this.github.executeGraph<I_ItemQR>(generatedDynQuery, {
         orgLogin,
         projectNumber,
         itemCount: count,
-        fieldCount,
         after,
         before
       })
@@ -100,7 +54,9 @@ export class ItemService {
         hasMorePages = queryResponse.pageInfo.hasNextPage
         after = data.data.viewer.organization.projectV2.items.pageInfo.endCursor
 
-        items.push(...data.data.viewer.organization.projectV2.items.nodes)
+        queryResponse.nodes.map((item) => {
+          items.push(processItemResponse(item))
+        })
         pageInfo = queryResponse.pageInfo
         totalCount = queryResponse.totalCount
       } else {

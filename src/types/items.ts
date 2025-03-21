@@ -7,16 +7,14 @@ export enum ItemType {
   REDACTED = "REDACTED"
 }
 
-export interface I_ItemInfo {
+export type TItemInfo = {
   id: string,
   isArchived: boolean,
   updatedAt: string,
   type: ItemType,
-  fieldValues: {
-    totalCount: number;
-    pageInfo: IPageInfo;
-    nodes: ProjectV2ItemFieldValue[];
-  };
+  fields: {
+    [key: string]: ProjectV2ItemFieldValue
+  },
   content: ItemContent;
 }
 
@@ -228,4 +226,22 @@ export interface I_ItemState {
   orgLogin: string | null,
   isLoading: boolean,
   loadedProjects: number[],
+}
+
+export type TItemNodeQR = Omit<TItemInfo, "fields"> & {
+  [key: string]: ProjectV2ItemFieldValue
+}
+
+export interface I_ItemQR {
+  viewer: {
+    organization: {
+      projectV2: {
+        items: {
+          totalCount: number,
+          pageInfo: IPageInfo,
+          nodes: TItemNodeQR[]
+        }
+      }
+    }
+  }
 }
