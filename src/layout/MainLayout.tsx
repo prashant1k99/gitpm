@@ -11,7 +11,7 @@ export default function MainLayout({ children }: { children?: ReactNode }) {
     <SidebarProvider className='overflow-x-hidden max-w-dvw min-w-svw'>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b ">
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b">
           <div className="flex w-full items-center justify-between gap-2 px-4">
             <div className='flex items-center gap-2'>
               <Link to="/">
@@ -23,7 +23,7 @@ export default function MainLayout({ children }: { children?: ReactNode }) {
             <NavThemeSwitcher />
           </div>
         </header>
-        <main className='p-4 overflow-y-auto overflow-x-hidden h-[calc(100vh-4rem)]'>
+        <main className='overflow-y-auto overflow-x-hidden h-[calc(100vh-4rem)]'>
           {children || <Outlet />}
         </main>
       </SidebarInset>

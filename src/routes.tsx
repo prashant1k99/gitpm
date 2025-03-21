@@ -1,4 +1,4 @@
-import { createBrowserRouter, redirect, RouteObject } from 'react-router-dom';
+import { createBrowserRouter, Navigate, redirect, RouteObject } from 'react-router-dom';
 import RootLayout from '@/layout/RootLayout';
 import MainLayout from '@/layout/MainLayout';
 import DashboardPage from '@/pages/Dashboard';
@@ -7,9 +7,9 @@ import NotFoundPage from '@/pages/NotFoundPage';
 import Onboarding from './pages/Onboarding';
 import ProjectsPage from './pages/ProjectsPage';
 import ProjectDetailPage from './pages/ProjectDetailPage';
-import ViewPage from './pages/ViewPage';
 import OrgSettingPage from './pages/OrgSettingPage';
 import { loadUser } from './state/auth';
+import TaskPage from './pages/TaskPage';
 
 const routes: RouteObject[] = [
   {
@@ -77,9 +77,19 @@ const routes: RouteObject[] = [
                         element: <ProjectDetailPage />
                       },
                       {
-                        path: ":viewNumber",
-                        element: <ViewPage />
-                      }
+                        path: "task",
+                        children: [
+                          {
+                            index: true,
+                            element: <Navigate to=".." relative='path' />
+                            // Redirect to projectNumber page
+                          },
+                          {
+                            path: ":taskNumber",
+                            element: <TaskPage />
+                          }
+                        ]
+                      },
                     ]
                   }
                 ]
