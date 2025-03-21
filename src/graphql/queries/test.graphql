@@ -1,8 +1,8 @@
-query GetFields {
+query GetItemsForProjectV2($orgLogin: String!, $projectNumber: Int!, $itemCount: Int!, $after: String!, $before: String! ) {
   viewer {
-    organization(login: "WalletWave") {
-      projectV2(number: 1) {
-        items(first: 10, orderBy: { direction: DESC, field: POSITION }) {
+    organization(login: $orgLogin) {
+      projectV2(number: $projectNumber) {
+        items(first: $itemCount, after: $after, before: $before, orderBy: { direction: DESC, field: POSITION }) {
           totalCount
           pageInfo {
             hasNextPage
