@@ -4,7 +4,6 @@ import { Project } from "@/services/api/projects";
 import authState from "./auth";
 import { toast } from "sonner";
 import { IProjectState } from "@/types/projects";
-import DB from "@/db/organization";
 
 const projectState = signal<IProjectState>({
   orgId: null,
@@ -26,11 +25,7 @@ export const loadProjects = async () => {
       isLoading: true
     }
 
-    const db = DB.getDatabases(orgState.value.activeOrg.login)
-
-    const {
-      projects,
-    } = await projectService.getAllProjects({
+    await projectService.getAllProjects({
       orgLogin: orgState.value.activeOrg.login
     })
 
@@ -40,9 +35,6 @@ export const loadProjects = async () => {
       isLoading: false,
     }
 
-    projects.map(project => {
-      db.projects.put(project)
-    })
   } catch (error) {
     console.error(error)
     projectState.value = {

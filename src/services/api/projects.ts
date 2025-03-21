@@ -2,32 +2,13 @@ import { IPageInfo } from "@/types/common";
 import { GithubClient } from "../core/github";
 import { TProjectV2QR } from "@/types/projects";
 import projectsQuery from "@/graphql/queries/projects.graphql";
+import DB from "@/db/organization";
 
 export class Project {
   private github: GithubClient;
 
   constructor(authToken: string) {
     this.github = new GithubClient(authToken)
-  }
-
-  projects(orgLogin: string, after = "", before = "") {
-    interface IViewerProjectsLists {
-      viewer: {
-        organization: {
-          projectsV2: {
-            totalCount: number,
-            pageInfo: IPageInfo,
-            nodes: TProjectV2QR[]
-          }
-        }
-      }
-    }
-
-    return this.github.executeGraph<IViewerProjectsLists>(projectsQuery, {
-      login: orgLogin,
-      after,
-      before
-    })
   }
 
   async getAllProjects({
@@ -51,7 +32,6 @@ export class Project {
       }
     }
 
-    const projects: TProjectV2QR[] = []
     let pageInfo: IPageInfo = {
       hasNextPage: false,
       hasPreviousPage: false,
@@ -59,6 +39,8 @@ export class Project {
       endCursor: after
     }
     let totalCount: number = 0
+
+    const db = DB.getDatabases(orgLogin)
 
     let hasMoreProjects: boolean = true
     while (hasMoreProjects) {
@@ -74,7 +56,10 @@ export class Project {
         after = queryResponse.pageInfo.endCursor
         totalCount = queryResponse.totalCount
 
-        projects.push(...queryResponse.nodes)
+        queryResponse.nodes.map((project) => {
+          db.projects.put(project)
+        })
+
         pageInfo = queryResponse.pageInfo
       } else {
         throw new Error(data.errors[0])
@@ -82,7 +67,6 @@ export class Project {
     }
 
     return {
-      projects,
       pageInfo,
       totalCount
     }

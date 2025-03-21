@@ -70,7 +70,7 @@ export function NavProjects() {
                     <FolderDot className="group-data-[state=open]/collapsible:hidden" />
                     <FolderOpenDot className="hidden group-data-[state=open]/collapsible:inline" />
                     <Link to={`/project/${item.number}`}>
-                      <span>{item.title}</span>
+                      <span className="max-w-[160px] truncate inline-block" title={item.title}>{item.title}</span>
                     </Link>
                     <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                   </SidebarMenuButton>

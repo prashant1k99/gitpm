@@ -57,17 +57,10 @@ export const loadAllFieldsForProject = async (projectNumber: number) => {
     }
 
     const fieldService = new Field(authState.value.githubToken)
-    const { fields } =
-      await fieldService.allFieldsForProject({
-        orgLogin: orgState.value.activeOrg.login,
-        projectNumber,
-      })
 
-    fields.map((field) => {
-      db.fields.put({
-        projectId: projectNumber,
-        ...field
-      })
+    await fieldService.allFieldsForProject({
+      orgLogin: orgState.value.activeOrg.login,
+      projectNumber,
     })
 
     fieldState.value = {
@@ -79,7 +72,7 @@ export const loadAllFieldsForProject = async (projectNumber: number) => {
       ]
     }
 
-    return fields
+    return
   } catch (error) {
     fieldState.value = {
       ...fieldState.value,

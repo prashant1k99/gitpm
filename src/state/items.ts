@@ -1,4 +1,4 @@
-import { I_ItemState, IssueContent, ItemType } from '@/types/items'
+import { I_ItemState } from '@/types/items'
 import { signal } from '@preact/signals-react'
 import orgState from './organizations'
 import authState from './auth'
@@ -51,40 +51,7 @@ export const loadItemsForProject = async (projectNumber: number) => {
         projectNumber,
         fields,
       })
-    items.map((item) => {
-      const defaultPermissions = {
-        viewerCanClose: false,
-        viewerCanDelete: false,
-        viewerCanLabel: false,
-        viewerCanReopen: false,
-        viewerCanUpdate: false,
-      }
 
-      const permissions =
-        item.type === ItemType.ISSUE
-          ? {
-            viewerCanClose:
-              (item.content as IssueContent)?.viewerCanClose || false,
-            viewerCanDelete:
-              (item.content as IssueContent)?.viewerCanDelete || false,
-            viewerCanLabel:
-              (item.content as IssueContent)?.viewerCanLabel || false,
-            viewerCanReopen:
-              (item.content as IssueContent)?.viewerCanReopen || false,
-            viewerCanUpdate:
-              (item.content as IssueContent)?.viewerCanUpdate || false,
-          }
-          : defaultPermissions
-
-      db.tasks.put({
-        ...item,
-        projectId: projectNumber,
-        updatedAt: new Date(item.updatedAt),
-        fields: item.fields,
-        content: item.content,
-        permissions: permissions,
-      })
-    })
     itemState.value = {
       orgLogin: orgState.value.activeOrg.id,
       isLoading: false,

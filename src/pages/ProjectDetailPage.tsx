@@ -53,7 +53,7 @@ export default function ProjectDetailPage() {
       </h1>
       {items?.map((item) => {
         return (
-          <p key={item.id}>{item.content.title} - {item.content.body}</p>
+          <p key={item.id}>{item.content.title} - {item.content.body} | {JSON.stringify(item.fields["assignees"]?.users.nodes[0].name) || "N/A"}</p>
         )
       })}
 
