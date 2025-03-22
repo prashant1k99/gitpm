@@ -62,6 +62,7 @@ export function NavProjects() {
               key={item.title}
               asChild
               defaultOpen={item.number.toString() == projectNumber}
+              open={item.number.toString() == projectNumber}
               className="group/collapsible"
             >
               <SidebarMenuItem>
