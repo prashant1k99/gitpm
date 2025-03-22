@@ -45,7 +45,7 @@ export const loadAllFieldsForProject = async (projectNumber: number) => {
   const db = DB.getDatabases(orgState.value.activeOrg.login)
 
   if (fieldState.value.loadedProjects.includes(projectNumber)) {
-    return db.projects.where("projectId").equals(projectNumber).toArray()
+    return db.fields.where("projectId").equals(projectNumber).toArray()
   }
   if (fieldState.value.isLoadingFieldsForProject) {
     return

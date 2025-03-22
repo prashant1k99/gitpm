@@ -18,7 +18,7 @@ export default function TaskRowListing({ task }: {
 
   if (isIssueContent(task.content)) {
     return (
-      <TableRow key={task.id} className="cursor-pointer">
+      <TableRow key={task.id} >
         <TableCell className="medium flex flex-row justify-between items-center mx-2 rounded-xl">
           <div className="flex flex-row items-center">
             {task.content.closed ? (
@@ -26,16 +26,16 @@ export default function TaskRowListing({ task }: {
             ) : (
               <CircleDot className="h-4 w-4 text-green-500" />
             )}
-            <span className="font-medium m-2">
-              <Link to={`/project/${projectNumber}/task/${task.id}`}>
+            <Link to={`/project/${projectNumber}/task/${task.id}`} className="flex flex-row items-center cursor-pointer">
+              <span className="font-medium m-2">
                 {task.content.title}
-              </Link>
-            </span>
-            <span className="font-normal text-gray-500 max-w-[250px] truncate inline-block">
-              {task.content.body}
-            </span>
+              </span>
+              <span className="font-normal text-gray-500 max-w-[350px] truncate inline-block">
+                {task.content.body}
+              </span>
+            </Link>
           </div>
-          <div className="flex flex-row gap-2 items-center">
+          <div className="flex flex-row gap-3 items-center">
             {task.content.labels.totalCount > 0 && task.content.labels.nodes.map(label => (
               <Badge key={label.id} backgroundColor={`#${label.color}`} className="text-white">{label.name}</Badge>
             ))}

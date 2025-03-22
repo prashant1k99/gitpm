@@ -1,3 +1,4 @@
+import { IViewLayout } from "@/types/common";
 import { TProjectV2Field } from "@/types/fields";
 import {
   ItemType as TasksType,
@@ -13,12 +14,6 @@ export interface Project {
   readme: string;
   isTemplate: boolean;
   updatedAt: Date;
-}
-
-export enum IViewLayout {
-  TABLE_LAYOUT = "TABLE_LAYOUT",
-  ROADMAP_LAYOUT = "ROADMAP_LAYOUT",
-  BOARD_LAYOUT = "BOARD_LAYOUT"
 }
 
 export interface View {
