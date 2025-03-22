@@ -10,6 +10,7 @@ import ProjectDetailPage from './pages/ProjectDetailPage';
 import OrgSettingPage from './pages/OrgSettingPage';
 import { loadUser } from './state/auth';
 import TaskPage from './pages/TaskPage';
+import ProjectViewPage from './pages/ViewPage';
 
 const routes: RouteObject[] = [
   {
@@ -82,7 +83,6 @@ const routes: RouteObject[] = [
                           {
                             index: true,
                             element: <Navigate to=".." relative='path' />
-                            // Redirect to projectNumber page
                           },
                           {
                             path: ":taskNumber",
@@ -90,6 +90,19 @@ const routes: RouteObject[] = [
                           }
                         ]
                       },
+                      {
+                        path: "view",
+                        children: [
+                          {
+                            index: true,
+                            element: <Navigate to=".." relative='path' />
+                          },
+                          {
+                            path: ":viewNumber",
+                            element: <ProjectViewPage />
+                          }
+                        ]
+                      }
                     ]
                   }
                 ]
