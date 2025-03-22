@@ -29,7 +29,7 @@ effect(() => {
   }
 })
 
-export const loadAllFieldsForProject = async (projectNumber: number) => {
+export const loadAllFieldsForProject = async (projectNumber: number, forceLoad = false) => {
   if (!authState.value.githubToken) {
     toast.error('Github Token not found', {
       description: 'Try again later',
@@ -44,7 +44,7 @@ export const loadAllFieldsForProject = async (projectNumber: number) => {
   }
   const db = DB.getDatabases(orgState.value.activeOrg.login)
 
-  if (fieldState.value.loadedProjects.includes(projectNumber)) {
+  if (!forceLoad && fieldState.value.loadedProjects.includes(projectNumber)) {
     return db.fields.where("projectId").equals(projectNumber).toArray()
   }
   if (fieldState.value.isLoadingFieldsForProject) {

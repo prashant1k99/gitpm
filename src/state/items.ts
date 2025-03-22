@@ -13,7 +13,7 @@ const itemState = signal<I_ItemState>({
   orgLogin: null,
 })
 
-export const loadItemsForProject = async (projectNumber: number) => {
+export const loadItemsForProject = async (projectNumber: number, forceLoad = false) => {
   if (!authState.value.githubToken) {
     toast.error('Github Token not found', {
       description: 'Try again later',
@@ -27,7 +27,7 @@ export const loadItemsForProject = async (projectNumber: number) => {
     return
   }
   const db = DB.getDatabases(orgState.value.activeOrg.login)
-  if (itemState.value.loadedProjects.includes(projectNumber)) {
+  if (!forceLoad && itemState.value.loadedProjects.includes(projectNumber)) {
     return db.tasks.where("projectId").equals(projectNumber).toArray()
   }
 
@@ -37,6 +37,7 @@ export const loadItemsForProject = async (projectNumber: number) => {
   ) {
     return
   }
+
   try {
     itemState.value = {
       ...itemState.value,
