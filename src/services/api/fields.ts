@@ -64,7 +64,7 @@ export class Field {
           db.fields.put({
             projectId: projectNumber,
             ...field,
-            fieldQueryName
+            fieldQueryName,
           })
         })
 

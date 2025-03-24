@@ -42,7 +42,7 @@ export const loadUser = async () => {
         email: userData.data.email,
         displayName: userData.data.name,
         photoURL: userData.data.avatar_url,
-        githubUserName: userData.data.login
+        githubUserName: userData.data.login,
       },
       githubToken: session.providerAccessToken
     }

@@ -126,6 +126,7 @@ export function generateItemsQuery(fields: TProjectV2Field[]): string {
     }
     
     fragment FieldValueArguments on ProjectV2ItemFieldValue {
+      __typename
       ... on ProjectV2ItemFieldValueCommon {
         id
         field {
@@ -246,6 +247,9 @@ export function generateItemsQuery(fields: TProjectV2Field[]): string {
             avatarUrl
           }
         }
+      }
+      ... on ProjectV2ItemFieldNumberValue {
+        number
       }
     }
   `;

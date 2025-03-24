@@ -84,6 +84,7 @@ export type ReviewerNode = ReviewerBot | ReviewerMannequin | ReviewerTeam | Revi
 
 // Field value types
 export interface ProjectV2ItemFieldValueCommon {
+  __typename: string;
   id: string;
   field: ProjectV2FieldCommon;
 }

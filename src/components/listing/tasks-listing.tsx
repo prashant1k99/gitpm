@@ -3,7 +3,7 @@ import { Table, TableBody } from "../ui/table";
 import TaskRowListing from "./task-row";
 
 export default function TaskListing({ tasks }: {
-  tasks: Tasks[]
+  tasks: Tasks[],
 }) {
   return (
     <Table>
