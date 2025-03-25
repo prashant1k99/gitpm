@@ -94,6 +94,9 @@ export interface ProjectV2ItemFieldDateValue extends ProjectV2ItemFieldValueComm
 }
 
 export interface ProjectV2ItemFieldIterationValue extends ProjectV2ItemFieldValueCommon {
+  title: string;
+  startDate: string;
+  duration: number;
   iterationId: string;
 }
 
@@ -127,8 +130,19 @@ export interface ProjectV2ItemFieldReviewerValue extends ProjectV2ItemFieldValue
   };
 }
 
+export enum FieldColors {
+  BLUE = "BLUE",
+  GRAY = "GRAY",
+  GREEN = "GREEN",
+  ORANGE = "ORANGE",
+  PINK = "PINK",
+  PURPLE = "PURPLE",
+  RED = "RED",
+  YELLOW = "YELLOW"
+}
+
 export interface ProjectV2ItemFieldSingleSelectValue extends ProjectV2ItemFieldValueCommon {
-  color: string;
+  color: FieldColors;
   id: string;
   name: string;
 }
@@ -136,6 +150,11 @@ export interface ProjectV2ItemFieldSingleSelectValue extends ProjectV2ItemFieldV
 export interface ProjectV2ItemFieldTextValue extends ProjectV2ItemFieldValueCommon {
   id: string;
   text: string;
+}
+
+export interface ProjectV2ItemFieldNumberValue extends ProjectV2ItemFieldValueCommon {
+  id: string;
+  number: number;
 }
 
 export interface ProjectV2ItemFieldUserValue extends ProjectV2ItemFieldValueCommon {
@@ -156,7 +175,8 @@ export type ProjectV2ItemFieldValue =
   | ProjectV2ItemFieldReviewerValue
   | ProjectV2ItemFieldSingleSelectValue
   | ProjectV2ItemFieldTextValue
-  | ProjectV2ItemFieldUserValue;
+  | ProjectV2ItemFieldUserValue
+  | ProjectV2ItemFieldNumberValue
 
 // Content types
 export interface IssueContent {

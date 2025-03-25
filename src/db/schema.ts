@@ -54,15 +54,17 @@ export interface PageInfo {
   startCursor: string;
 }
 
-export interface Tasks {
+export type T_TaskField = {
+  [key: string]: ProjectV2ItemFieldValue
+}
+
+export type Tasks = {
   id: string
   projectId: number,
   isArchived: boolean
   type: TasksType
   updatedAt: Date
-  fields: {
-    [key: string]: ProjectV2ItemFieldValue
-  },
+  fields: T_TaskField,
   content: TaskContent,
   permissions: {
     viewerCanClose: boolean

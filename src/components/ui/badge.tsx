@@ -39,7 +39,7 @@ function Badge({
     backgroundColor?: string;
   }) {
   const Comp = asChild ? Slot : "span"
-  const customStyle = backgroundColor ? { backgroundColor, borderColor: backgroundColor } : style;
+  const customStyle = backgroundColor ? { backgroundColor, borderColor: backgroundColor, color: "white" } : style;
 
   return (
     <Comp

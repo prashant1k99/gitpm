@@ -5,14 +5,14 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const getNestedValue = <T extends Record<string, unknown>>(obj: T, path: string): unknown => {
+export const getNestedValue = <T>(obj: unknown, path: string): T | undefined => {
   if (!path) {
-    return obj;
+    return obj as T
   }
 
   const pathSegments = path.split('.').filter(Boolean);
   if (pathSegments.length === 0) {
-    return obj;
+    return obj as T;
   }
 
   const arrayAccessRegex = /^(.*?)\[(\d+)\]$/;
@@ -21,7 +21,7 @@ export const getNestedValue = <T extends Record<string, unknown>>(obj: T, path: 
 
   for (const segment of pathSegments) {
     if (current === undefined || current === null) {
-      return current;
+      return current as T;
     }
 
     const arrayMatch = segment.match(arrayAccessRegex);
@@ -44,5 +44,5 @@ export const getNestedValue = <T extends Record<string, unknown>>(obj: T, path: 
     }
   }
 
-  return current;
+  return current as T;
 };
