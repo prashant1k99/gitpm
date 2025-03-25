@@ -4,9 +4,9 @@ import { getNestedValue } from "@/lib/utils";
 import { IViewLayout } from "@/types/common"
 import { MilestoneNode, ProjectV2ItemFieldDateValue, ProjectV2ItemFieldIterationValue, ProjectV2ItemFieldNumberValue, ProjectV2ItemFieldSingleSelectValue, ProjectV2ItemFieldTextValue, ProjectV2ItemFieldValue, RepositoryNode, ReviewerNode, FieldColors, UserNode } from "@/types/items";
 import { useLiveQuery } from "dexie-react-hooks";
-import { Badge } from "../ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import TaskListing from "./tasks-listing";
+import { Badge } from "../ui/badge";
 
 type GroupByTaskField = {
   id: string,
@@ -191,30 +191,42 @@ export function RenderGroupedListing({
 
   if (!groupedData) {
     return (
-      <h1>Invalid Data</h1>
+      <h1>No Tasks found</h1>
     )
   }
 
   return (
-    <div className="p-4 flex flex-col gap-7 pt-4">
+    <div className="flex flex-col gap-4 ">
       {Object.keys(groupedData).map((key) => {
         const info = groupedData[key].info
         const tasks = groupedData[key].values
         return (
           <div key={key}>
-            <div>
-              <span className="mr-3">
-                {groupByField.name} :
-              </span>
-              <Badge backgroundColor={info.color && getColorHexCode(info.color)}>
-                {info.image && (
-                  <Avatar className="h-4 w-4">
-                    <AvatarImage src={info.image} />
-                    <AvatarFallback>GPM</AvatarFallback>
-                  </Avatar>
-                )}
-                {info.name}
-              </Badge>
+            <div className="flex justify-between items-center w-full bg-accent p-2 px-4 rounded-lg">
+              <div className=" flex items-center">
+                <span className="mr-3">
+                  {groupByField.name} :
+                </span>
+                <Badge
+                  className="font-semibold border-2"
+                  style={info.color ? {
+                    borderColor: getColorHexCode(info.color),
+                    backgroundColor: `${getColorHexCode(info.color)}20`, // 20 is hex for 12% opacity
+                    color: getColorHexCode(info.color)
+                  } : {}}
+                >
+                  {info.image && (
+                    <Avatar className="h-4 w-4">
+                      <AvatarImage src={info.image} />
+                      <AvatarFallback>GPM</AvatarFallback>
+                    </Avatar>
+                  )}
+                  {info.name}
+                </Badge>
+                {/* <span className="p-0.5 px-2.5 flex items-center gap-1 bg-accent-foreground text-accent font-semibold text-sm rounded-lg"> */}
+                {/* </span> */}
+              </div>
+              <div className="font-light text-sm">Count: {tasks.length}</div>
             </div>
             <div>
               <TaskListing tasks={tasks} />

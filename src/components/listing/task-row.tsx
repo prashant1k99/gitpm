@@ -18,8 +18,8 @@ export default function TaskRowListing({ task }: {
 
   if (isIssueContent(task.content)) {
     return (
-      <TableRow key={task.id} >
-        <TableCell className="medium flex flex-row justify-between items-center mx-2 rounded-xl">
+      <TableRow key={task.id} className="w-full border-0 p-0" >
+        <TableCell className="medium flex flex-row justify-between items-center p-1 px-4 ">
           <div className="flex flex-row items-center">
             {task.content.closed ? (
               <CircleCheck className="h-4 w-4 text-purple-800" />

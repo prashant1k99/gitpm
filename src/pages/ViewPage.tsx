@@ -56,7 +56,7 @@ export default function ProjectViewPage() {
 
   return (
     <div className="p-4">
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-row gap-2 pb-4">
         <Select onValueChange={handleGroupByChange} value={groupByField?.fieldQueryName || ''}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Group By" />
