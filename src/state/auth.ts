@@ -26,24 +26,35 @@ export const loadUser = async () => {
   try {
     const session = await account.getSession("current");
 
-    const userService = new UserService(session.providerAccessToken);
+    let user: User
 
-    const userData = await userService.self
+    const userInfo = localStorage.getItem(session.providerUid)
+    if (!userInfo) {
+      const userService = new UserService(session.providerAccessToken);
 
-    if (userData.status != 200) {
-      await account.deleteSession("current")
-      throw new Error("Failed to fetch data")
-    }
+      const userData = await userService.self
 
-    authState.value = {
-      isAuthenticated: true,
-      user: {
+      if (userData.status != 200) {
+        await account.deleteSession("current")
+        throw new Error("Failed to fetch data")
+      }
+
+      user = {
         uid: session.providerUid,
         email: userData.data.email,
         displayName: userData.data.name,
         photoURL: userData.data.avatar_url,
         githubUserName: userData.data.login,
-      },
+      }
+
+      localStorage.setItem(session.providerUid, JSON.stringify(user))
+    } else {
+      user = JSON.parse(userInfo)
+    }
+
+    authState.value = {
+      isAuthenticated: true,
+      user,
       githubToken: session.providerAccessToken
     }
 

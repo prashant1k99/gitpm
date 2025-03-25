@@ -118,7 +118,7 @@ function getColorHexCode(color: FieldColors) {
     case FieldColors.BLUE:
       return "#262df0"
     case FieldColors.YELLOW:
-      return "#f7c765"
+      return "#fcb138"
     case FieldColors.RED:
       return "#e8352c"
     case FieldColors.PURPLE:
@@ -126,7 +126,7 @@ function getColorHexCode(color: FieldColors) {
     case FieldColors.PINK:
       return "#FFC0CB"
     case FieldColors.ORANGE:
-      return "#FF5733"
+      return "#ed682f"
     case FieldColors.GREEN:
       return "#00FF00"
     case FieldColors.GRAY:
