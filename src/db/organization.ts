@@ -14,7 +14,7 @@ export class OrganizationDB extends Dexie {
     super(orgName);
 
     this.version(1).stores({
-      projects: 'id',
+      projects: 'id, number',
       views: 'id, number, projectId, layout',
       fields: 'id, projectId',
       favourites: '++id, itemType',

@@ -36,9 +36,12 @@ export default function TaskRowListing({ task }: {
             </Link>
           </div>
           <div className="flex flex-row gap-3 items-center">
-            {task.content.labels.totalCount > 0 && task.content.labels.nodes.map(label => (
+            {task.content.labels.totalCount > 0 && task.content.labels.nodes.slice(0, 2).map(label => (
               <Badge key={label.id} backgroundColor={`#${label.color}`} className="text-white">{label.name}</Badge>
             ))}
+            {task.content.labels.totalCount > 2 && (
+              <Badge variant="outline" className="text-xs">+{task.content.labels.totalCount - 2}</Badge>
+            )}
             <span className="text-accent-foreground font-light text-xs">
               {new Date(task.content.createdAt).toLocaleDateString(undefined, {
                 day: '2-digit',

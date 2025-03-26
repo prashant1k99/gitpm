@@ -1,9 +1,9 @@
 export enum ProjectStatus {
-  AT_RISK = 'AT_RISK',     // A project v2 that is at risk and encountering some challenges
-  COMPLETE = 'COMPLETE',    // A project v2 that is complete
-  INACTIVE = 'INACTIVE',    // A project v2 that is inactive
-  OFF_TRACK = 'OFF_TRACK',  // A project v2 that is off track and needs attention
-  ON_TRACK = 'ON_TRACK'     // A project v2 that is on track with no risks
+  AT_RISK = 'AT_RISK',
+  COMPLETE = 'COMPLETE',
+  INACTIVE = 'INACTIVE',
+  OFF_TRACK = 'OFF_TRACK',
+  ON_TRACK = 'ON_TRACK'
 }
 
 export type ProjectStatusUpdates = {
