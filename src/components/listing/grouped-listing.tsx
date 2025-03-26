@@ -29,6 +29,13 @@ function getFieldType(field: ProjectV2ItemFieldValue): string {
   return 'unknown';
 }
 
+function getReviewerName(reviewer: ReviewerNode) {
+  if (reviewer.__typename === "Bot" || reviewer.__typename === "Mannequin") {
+    return reviewer.login;
+  }
+  return reviewer.name;
+}
+
 /* eslint-disable no-case-declarations */
 function formulateFieldResponse(field: ProjectV2ItemFieldValue): GroupByTaskField {
   const defaultValue: GroupByTaskField = {
@@ -83,7 +90,7 @@ function formulateFieldResponse(field: ProjectV2ItemFieldValue): GroupByTaskFiel
 
       return {
         id: reviewer.id,
-        name: reviewer["name"] as string || reviewer["login"] as string,
+        name: getReviewerName(reviewer),
         image: reviewer.avatarUrl
       }
 
