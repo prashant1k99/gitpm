@@ -7,6 +7,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import TaskListing from "./tasks-listing";
 import { Badge } from "../ui/badge";
+import { DataType } from "@/types/fields";
 
 type GroupByTaskField = {
   id: string,
@@ -134,18 +135,33 @@ function getColorHexCode(color: FieldColors) {
   }
 }
 
+function countNumericField(tasks: Tasks[], field: string) {
+  return tasks.reduce((acc, task) => {
+    const value = task.fields[field] as ProjectV2ItemFieldNumberValue
+    if (!value) {
+      return acc
+    }
+    return acc + value.number
+  }, 0)
+}
+
 export function RenderGroupedListing({
   projectNumber,
   groupByField,
   layout,
-  db
+  db,
+  fields
 }: {
   projectNumber: number,
   groupByField: Field,
   layout: IViewLayout,
-  db: OrganizationDB
+  db: OrganizationDB,
+  fields: Field[]
 }) {
   console.log(projectNumber, groupByField, layout)
+
+  const numberTypeField = fields.filter(field => field.dataType == DataType.NUMBER)
+
   const groupedData = useLiveQuery(async () => {
     // Perform your query and grouping here
     const results = await db.tasks.where("projectId").equals(projectNumber).toArray();
@@ -223,10 +239,13 @@ export function RenderGroupedListing({
                   )}
                   {info.name}
                 </Badge>
-                {/* <span className="p-0.5 px-2.5 flex items-center gap-1 bg-accent-foreground text-accent font-semibold text-sm rounded-lg"> */}
-                {/* </span> */}
               </div>
-              <div className="font-light text-sm">Count: {tasks.length}</div>
+              <div className="flex gap-1">
+                <Badge className="bg-accent text-secondary-foreground border border-accent-foreground/20">Count: {tasks.length}</Badge>
+                {numberTypeField.map(field => (
+                  <Badge className="bg-accent text-accent-foreground border border-accent-foreground/20">{field.name}: {countNumericField(tasks, field.fieldQueryName)}</Badge>
+                ))}
+              </div>
             </div>
             <div>
               <TaskListing tasks={tasks} />

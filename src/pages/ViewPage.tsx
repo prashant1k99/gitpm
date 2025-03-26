@@ -75,7 +75,7 @@ export default function ProjectViewPage() {
         </Select>
       </div>
       {groupByField ? (
-        <RenderGroupedListing db={db} groupByField={groupByField} projectNumber={Number(projectNumber)} layout={IViewLayout.TABLE_LAYOUT} />
+        <RenderGroupedListing fields={fields as Field[]} db={db} groupByField={groupByField} projectNumber={Number(projectNumber)} layout={IViewLayout.TABLE_LAYOUT} />
       ) : (
         <SimpleTaskListing projectNumber={Number(projectNumber)} db={db} />
       )}

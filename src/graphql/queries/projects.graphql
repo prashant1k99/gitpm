@@ -14,6 +14,23 @@ query GetProjects($login: String!, $after: String!, $before: String!) {
           id
           shortDescription
           number
+          public
+          closed
+          statusUpdates(first: 100) {
+            nodes {
+              startDate
+              targetDate
+              updatedAt
+              id
+              bodyHTML
+              creator {
+                login
+                avatarUrl
+              }
+              status
+              createdAt
+            }
+          }
           viewerCanClose
           viewerCanUpdate
           title

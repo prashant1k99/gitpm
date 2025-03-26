@@ -6,16 +6,6 @@ import {
   ProjectV2ItemFieldValue
 } from "@/types/items"
 
-export interface Project {
-  id: string;
-  number: number;
-  name: string;
-  description?: string;
-  readme: string;
-  isTemplate: boolean;
-  updatedAt: Date;
-}
-
 export interface View {
   id: string;
   index: number;

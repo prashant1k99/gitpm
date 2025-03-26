@@ -5,7 +5,6 @@ import DashboardPage from '@/pages/Dashboard';
 import AuthPage from '@/pages/AuthPage';
 import NotFoundPage from '@/pages/NotFoundPage';
 import Onboarding from './pages/Onboarding';
-import ProjectsPage from './pages/ProjectsPage';
 import ProjectDetailPage from './pages/ProjectDetailPage';
 import OrgSettingPage from './pages/OrgSettingPage';
 import { loadUser } from './state/auth';
@@ -68,7 +67,7 @@ const routes: RouteObject[] = [
                 children: [
                   {
                     index: true,
-                    element: <ProjectsPage />,
+                    element: <Navigate to=".." relative='path' />
                   },
                   {
                     path: ":projectNumber",

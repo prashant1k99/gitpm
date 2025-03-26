@@ -27,7 +27,7 @@ export function NavProjects() {
 
   const projects = useLiveQuery(() => {
     const db = DB.getDatabases(orgState.value.activeOrg?.login as string)
-    return db.projects.toArray()
+    return db.projects.filter(project => !project.closed || !project.template).toArray()
   }, [orgLogin])
 
   useSignalEffect(() => {
