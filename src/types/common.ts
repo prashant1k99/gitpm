@@ -7,7 +7,7 @@ export interface IPageInfo {
 
 export enum IViewLayout {
   TABLE_LAYOUT = "TABLE_LAYOUT",
-  ROADMAP_LAYOUT = "ROADMAP_LAYOUT",
+  // ROADMAP_LAYOUT = "ROADMAP_LAYOUT",
   BOARD_LAYOUT = "BOARD_LAYOUT"
 }
 

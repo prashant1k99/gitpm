@@ -1,19 +1,43 @@
 import { OrganizationDB } from "@/db/organization";
 import { Field, Tasks } from "@/db/schema";
 import { getNestedValue } from "@/lib/utils";
-import { IViewLayout } from "@/types/common"
 import { MilestoneNode, ProjectV2ItemFieldDateValue, ProjectV2ItemFieldIterationValue, ProjectV2ItemFieldNumberValue, ProjectV2ItemFieldSingleSelectValue, ProjectV2ItemFieldTextValue, ProjectV2ItemFieldValue, RepositoryNode, ReviewerNode, FieldColors, UserNode } from "@/types/items";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import TaskListing from "./tasks-listing";
 import { Badge } from "../ui/badge";
 import { DataType } from "@/types/fields";
+import { useState } from "react";
+import { viewOptionState } from "@/state/views";
+import { useSignalEffect } from "@preact/signals-react";
 
 type GroupByTaskField = {
   id: string,
   name: string,
   color?: FieldColors,
   image?: string,
+}
+
+let currentIterationId: string
+
+function isCurrentIteration(iteration: ProjectV2ItemFieldIterationValue) {
+  if (iteration.iterationId == currentIterationId) {
+    return true
+  }
+
+  const startDate = iteration.startDate ? new Date(iteration.startDate) : null;
+  const endDate = startDate && iteration.duration
+    ? new Date(startDate.getTime() + (iteration.duration * 24 * 60 * 60 * 1000))
+    : null;
+  const now = new Date();
+  const isCurrentIter = startDate && endDate
+    ? now >= startDate && now <= endDate
+    : false;
+
+  if (isCurrentIter) {
+    currentIterationId = iteration.iterationId
+  }
+  return isCurrentIter
 }
 
 function getFieldType(field: ProjectV2ItemFieldValue): string {
@@ -59,14 +83,14 @@ function formulateFieldResponse(field: ProjectV2ItemFieldValue): GroupByTaskFiel
         id: date.date,
         name: date.date,
       }
-
     case 'iteration':
       const iteration = getNestedValue<ProjectV2ItemFieldIterationValue>(field, "");
       if (!iteration) return defaultValue;
 
+      const isCurrentIter = isCurrentIteration(iteration)
       return {
         id: iteration.iterationId,
-        name: iteration.title
+        name: isCurrentIter ? `[Current] ${iteration.title}` : iteration.title
       }
     case 'milestone':
       const milestone = getNestedValue<MilestoneNode>(field, "milestone");
@@ -154,20 +178,22 @@ function countNumericField(tasks: Tasks[], field: string) {
 
 export function RenderGroupedListing({
   projectNumber,
-  groupByField,
-  layout,
   db,
-  fields
 }: {
   projectNumber: number,
-  groupByField: Field,
-  layout: IViewLayout,
   db: OrganizationDB,
-  fields: Field[]
 }) {
-  console.log(projectNumber, groupByField, layout)
+  const [groupByField, setHasGroupByField] = useState<Field | null>(viewOptionState.value?.groupByField || null)
 
-  const numberTypeField = fields.filter(field => field.dataType == DataType.NUMBER)
+  useSignalEffect(() => {
+    setHasGroupByField(viewOptionState.value.groupByField || null)
+  })
+
+  const fields = useLiveQuery(() => {
+    return db.fields.where("projectId").equals(projectNumber).toArray()
+  }, [projectNumber])
+
+  const numberTypeField = fields?.filter(field => field.dataType == DataType.NUMBER)
 
   const groupedData = useLiveQuery(async () => {
     // Perform your query and grouping here
@@ -179,7 +205,7 @@ export function RenderGroupedListing({
 
     // Example: Grouping by a 'category' field
     const grouped = results.reduce((acc, item) => {
-      const fieldValues = item.fields[groupByField.fieldQueryName]
+      const fieldValues = item.fields[groupByField?.fieldQueryName as string]
 
       if (!fieldValues) {
         if (!acc["undefined"]) {
@@ -225,18 +251,18 @@ export function RenderGroupedListing({
         const tasks = groupedData[key].values
         return (
           <div key={key}>
-            <div className="flex justify-between items-center w-full bg-accent p-2 px-4 rounded-lg">
+            <div className="flex justify-between items-center w-full bg-accent p-2 pr-3 pl-4 rounded-lg">
               <div className=" flex items-center">
                 <span className="mr-3">
-                  {groupByField.name} :
+                  {groupByField?.name} :
                 </span>
                 <Badge
-                  className="font-semibold border-2"
-                  style={info.color ? {
+                  className="font-semibold border-2 border-accent-foreground bg-accent text-accent-foreground"
+                  style={info.color && {
                     borderColor: getColorHexCode(info.color),
                     backgroundColor: `${getColorHexCode(info.color)}20`, // 20 is hex for 12% opacity
                     color: getColorHexCode(info.color)
-                  } : {}}
+                  }}
                 >
                   {info.image && (
                     <Avatar className="h-4 w-4">
@@ -249,8 +275,8 @@ export function RenderGroupedListing({
               </div>
               <div className="flex gap-1">
                 <Badge className="bg-accent text-secondary-foreground border border-accent-foreground/20">Count: {tasks.length}</Badge>
-                {numberTypeField.map(field => (
-                  <Badge className="bg-accent text-accent-foreground border border-accent-foreground/20">{field.name}: {countNumericField(tasks, field.fieldQueryName)}</Badge>
+                {numberTypeField?.map(field => (
+                  <Badge key={field.id} className="bg-accent text-accent-foreground border border-accent-foreground/20">{field.name}: {countNumericField(tasks, field.fieldQueryName)}</Badge>
                 ))}
               </div>
             </div>
