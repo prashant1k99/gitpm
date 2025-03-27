@@ -126,13 +126,13 @@ export function ViewOptions({
         <div className="flex flex-wrap gap-2">
           {constantDisplayFields.map(field =>
             <div onClick={() => toggleFieldVisible(field.id)} key={field.id}
-              className={`cursor-pointer font-light text-sm w-fit p-0 px-2 rounded-md ${selectedFieldOptions.includes(field.id) && "bg-accent border border-accent-foreground"}`}>
+              className={`cursor-pointer select-none font-light text-sm w-fit p-0 px-2 rounded-md ${selectedFieldOptions.includes(field.id) && "bg-sidebar-accent border border-accent-foreground"}`}>
               {field.name}
             </div>
           )}
           {fieldOptions.map(field =>
             <div onClick={() => toggleFieldVisible(field.fieldQueryName)} key={field.id}
-              className={`cursor-pointer font-light text-sm w-fit p-0 px-2 rounded-md ${selectedFieldOptions.includes(field.fieldQueryName) && "bg-accent border border-accent-foreground"}`}>
+              className={`cursor-pointer font-light select-none text-sm w-fit p-0 px-2 rounded-md ${selectedFieldOptions.includes(field.fieldQueryName) && "bg-sidebar-accent border border-accent-foreground"}`}>
               {field.name}
             </div>
           )}
