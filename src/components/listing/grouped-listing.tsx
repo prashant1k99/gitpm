@@ -117,7 +117,6 @@ function formulateFieldResponse(field: ProjectV2ItemFieldValue): GroupByTaskFiel
         name: getReviewerName(reviewer),
         image: reviewer.avatarUrl
       }
-
     case 'singleSelect':
       const singleSelectValue = getNestedValue<ProjectV2ItemFieldSingleSelectValue>(field, "")
       if (!singleSelectValue) return defaultValue
@@ -257,7 +256,7 @@ export function RenderGroupedListing({
                   {groupByField?.name} :
                 </span>
                 <Badge
-                  className="font-semibold border-2 border-accent-foreground bg-accent text-accent-foreground"
+                  className=" border border-accent-foreground bg-accent text-accent-foreground"
                   style={info.color && {
                     borderColor: getColorHexCode(info.color),
                     backgroundColor: `${getColorHexCode(info.color)}20`, // 20 is hex for 12% opacity

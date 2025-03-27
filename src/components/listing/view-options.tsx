@@ -1,6 +1,5 @@
 import { useLiveQuery } from "dexie-react-hooks";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
-import { OrganizationDB } from "@/db/organization";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select"; import { OrganizationDB } from "@/db/organization";
 import { useEffect, useState } from "react";
 import { Field } from "@/db/schema";
 import { setGroupByOptions, setViewLayout, toggleFieldVisible, viewOptionState } from "@/state/views";
@@ -56,17 +55,22 @@ export function ViewOptions({
   ]
 
   useEffect(() => {
+    // Supported field types
+    const supportedFields = fields?.filter(
+      field => [
+        DataType.DATE,
+        DataType.NUMBER,
+        DataType.TEXT,
+        DataType.MILESTONE,
+        DataType.ITERATION,
+        DataType.SINGLE_SELECT,
+        DataType.SUB_ISSUES_PROGRESS,
+      ].includes(field.dataType)
+    ) || []
+    console.log("Fields: ", fields)
+    console.log(supportedFields)
     setFieldOptions(
-      fields?.filter(
-        field => [
-          DataType.DATE,
-          DataType.NUMBER,
-          DataType.TEXT,
-          DataType.MILESTONE,
-          DataType.ITERATION,
-          DataType.SINGLE_SELECT
-        ].includes(field.dataType)
-      ) || []
+      supportedFields
     )
   }, [fields])
 
