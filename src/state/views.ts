@@ -28,16 +28,26 @@ export interface IFilterOptions {
   operation: FilterOptionOperations
 }
 
+export enum ConstVisibleFields {
+  Description = "const_description",
+  UpdatedAt = "const_updatedAt",
+  Assignee = "const_assignee",
+  Labels = "const_labels",
+  CreatedAt = "const_createdAt",
+}
+
 export interface IViewOptionState {
   groupByField?: Field
   filter?: IFilterOptions
   layout: IViewLayout
   fieldsVisible: string[]
+  fieldsVisibleConst: ConstVisibleFields[]
 }
 
 export const viewOptionState = signal<IViewOptionState>({
   layout: IViewLayout.TABLE_LAYOUT,
   fieldsVisible: [],
+  fieldsVisibleConst: [ConstVisibleFields.Labels, ConstVisibleFields.Assignee, ConstVisibleFields.Description, ConstVisibleFields.UpdatedAt]
 })
 
 export function setGroupByOptions(field?: Field) {
@@ -51,6 +61,17 @@ export function setViewLayout(layout: IViewLayout) {
   viewOptionState.value = {
     ...viewOptionState.value,
     layout
+  }
+}
+
+export function toggleFieldVisibleConst(field: ConstVisibleFields) {
+  const visibleConstField = viewOptionState.value.fieldsVisibleConst.includes(field)
+    ? viewOptionState.value.fieldsVisibleConst.filter(el => el != field)
+    : [...viewOptionState.value.fieldsVisibleConst, field]
+
+  viewOptionState.value = {
+    ...viewOptionState.value,
+    fieldsVisibleConst: visibleConstField as ConstVisibleFields[]
   }
 }
 

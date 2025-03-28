@@ -60,7 +60,6 @@ export const loadItemsForProject = async (projectNumber: number, forceLoad = fal
     }
     return items
   } catch (error) {
-    console.error(error)
     itemState.value = {
       ...itemState.value,
       isLoading: false,

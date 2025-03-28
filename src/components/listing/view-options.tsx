@@ -2,7 +2,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select"; import { OrganizationDB } from "@/db/organization";
 import { useEffect, useState } from "react";
 import { Field } from "@/db/schema";
-import { setGroupByOptions, setViewLayout, toggleFieldVisible, viewOptionState } from "@/state/views";
+import { ConstVisibleFields, setGroupByOptions, setViewLayout, toggleFieldVisible, toggleFieldVisibleConst, viewOptionState } from "@/state/views";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,6 +30,7 @@ export function ViewOptions({
   const [fieldOptions, setFieldOptions] = useState<Field[]>([])
 
   const [selectedFieldOptions, setSelectedFieldOptions] = useState<string[]>([])
+  const [selectedConstFieldOptions, setSelectedConstFieldOptions] = useState<ConstVisibleFields[]>([])
 
   const fields = useLiveQuery(() => {
     return db.fields.where("projectId").equals(Number(projectNumber)).filter(field => !["title", "labels", "linkedpullrequests", "reviewers", "parentissue"].includes(field.fieldQueryName)).filter(field => field.dataType != "DATE").toArray()
@@ -47,11 +48,11 @@ export function ViewOptions({
   }
 
   const constantDisplayFields = [
-    { name: "Description", id: "const_description" },
-    { name: "Created Date", id: "const_createdAt" },
-    { name: "Updated Date", id: "cosnt_updatedAt" },
-    { name: "Assignee", id: "const_assignee" },
-    { name: "Labels", id: "const_labels" }
+    { name: "Description", id: ConstVisibleFields.Description },
+    { name: "Created Date", id: ConstVisibleFields.CreatedAt },
+    { name: "Updated Date", id: ConstVisibleFields.UpdatedAt },
+    { name: "Assignee", id: ConstVisibleFields.Assignee },
+    { name: "Labels", id: ConstVisibleFields.Labels }
   ]
 
   useEffect(() => {
@@ -67,8 +68,6 @@ export function ViewOptions({
         DataType.SUB_ISSUES_PROGRESS,
       ].includes(field.dataType)
     ) || []
-    console.log("Fields: ", fields)
-    console.log(supportedFields)
     setFieldOptions(
       supportedFields
     )
@@ -77,6 +76,8 @@ export function ViewOptions({
   useSignalEffect(() => {
     setLayout(viewOptionState.value.layout)
   })
+
+  useSignalEffect(() => setSelectedConstFieldOptions(viewOptionState.value.fieldsVisibleConst))
 
   useSignalEffect(() => {
     setSelectedFieldOptions(viewOptionState.value.fieldsVisible)
@@ -129,8 +130,8 @@ export function ViewOptions({
         <span className="text-xs font-extralight">Display properties</span>
         <div className="flex flex-wrap gap-2">
           {constantDisplayFields.map(field =>
-            <div onClick={() => toggleFieldVisible(field.id)} key={field.id}
-              className={`cursor-pointer select-none font-light text-sm w-fit p-0 px-2 rounded-md ${selectedFieldOptions.includes(field.id) && "bg-sidebar-accent border border-accent-foreground"}`}>
+            <div onClick={() => toggleFieldVisibleConst(field.id)} key={field.id}
+              className={`cursor-pointer select-none font-light text-sm w-fit p-0 px-2 rounded-md ${selectedConstFieldOptions.includes(field.id) && "bg-sidebar-accent border border-accent-foreground"}`}>
               {field.name}
             </div>
           )}

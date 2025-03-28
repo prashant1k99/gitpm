@@ -10,6 +10,7 @@ import { DataType } from "@/types/fields";
 import { useState } from "react";
 import { viewOptionState } from "@/state/views";
 import { useSignalEffect } from "@preact/signals-react";
+import { getColorHexCode, getFieldType, isCurrentIteration } from "./utils";
 
 type GroupByTaskField = {
   id: string,
@@ -17,42 +18,6 @@ type GroupByTaskField = {
   color?: FieldColors,
   image?: string,
 }
-
-let currentIterationId: string
-
-function isCurrentIteration(iteration: ProjectV2ItemFieldIterationValue) {
-  if (iteration.iterationId == currentIterationId) {
-    return true
-  }
-
-  const startDate = iteration.startDate ? new Date(iteration.startDate) : null;
-  const endDate = startDate && iteration.duration
-    ? new Date(startDate.getTime() + (iteration.duration * 24 * 60 * 60 * 1000))
-    : null;
-  const now = new Date();
-  const isCurrentIter = startDate && endDate
-    ? now >= startDate && now <= endDate
-    : false;
-
-  if (isCurrentIter) {
-    currentIterationId = iteration.iterationId
-  }
-  return isCurrentIter
-}
-
-function getFieldType(field: ProjectV2ItemFieldValue): string {
-  if ('users' in field) return 'user';
-  if ('date' in field) return 'date';
-  if ('iterationId' in field) return 'iteration';
-  if ('milestone' in field) return 'milestone';
-  if ('repository' in field) return 'repository';
-  if ('reviewers' in field) return 'reviewer';
-  if ('color' in field && 'name' in field) return 'singleSelect';
-  if ('text' in field) return 'text';
-  if ('number' in field) return 'number';
-  return 'unknown';
-}
-
 function getReviewerName(reviewer: ReviewerNode) {
   if (reviewer.__typename === "Bot" || reviewer.__typename === "Mannequin") {
     return reviewer.login;
@@ -141,27 +106,6 @@ function formulateFieldResponse(field: ProjectV2ItemFieldValue): GroupByTaskFiel
       }
     default:
       return defaultValue;
-  }
-}
-
-function getColorHexCode(color: FieldColors) {
-  switch (color) {
-    case FieldColors.BLUE:
-      return "#262df0"
-    case FieldColors.YELLOW:
-      return "#fcb138"
-    case FieldColors.RED:
-      return "#e8352c"
-    case FieldColors.PURPLE:
-      return "#800080"
-    case FieldColors.PINK:
-      return "#FFC0CB"
-    case FieldColors.ORANGE:
-      return "#ed682f"
-    case FieldColors.GREEN:
-      return "#00FF00"
-    case FieldColors.GRAY:
-      return "#808080"
   }
 }
 
