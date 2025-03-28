@@ -124,133 +124,132 @@ export function generateItemsQuery(fields: TProjectV2Field[]): string {
         }
       }
     }
-    
-    fragment FieldValueArguments on ProjectV2ItemFieldValue {
-      __typename
-      ... on ProjectV2ItemFieldValueCommon {
-        id
-        field {
-          ... on ProjectV2FieldCommon {
-            id
-            name
-          }
-        }
-      }
-      ... on ProjectV2ItemFieldDateValue {
-        date
-      }
-      ... on ProjectV2ItemFieldIterationValue {
-        iterationId
-        title
-        startDate
-        duration
-      }
-      ... on ProjectV2ItemFieldLabelValue {
-        labels(first: 10) {
-          totalCount
-          pageInfo {
-            hasNextPage
-            endCursor
-          }
-          nodes {
-            id
-            name
-            color
-          }
-        }
-      }
-      ... on ProjectV2ItemFieldMilestoneValue {
-        milestone {
-          id
-          title
-          state
-        }
-      }
-      ... on ProjectV2ItemFieldPullRequestValue {
-        pullRequests(first: 100) {
-          nodes {
-            id
-            closed
-            title
-          }
-        }
-      }
-      ... on ProjectV2ItemFieldRepositoryValue {
-        repository {
-          name
-          id
-        }
-      }
-      ... on ProjectV2ItemFieldReviewerValue {
-        reviewers(first: 10) {
-          pageInfo {
-            hasNextPage
-            endCursor
-          }
-          totalCount
-          nodes {
-            __typename
-            ... on Bot {
-              id
-              login
-              avatarUrl
-            }
-            ... on Mannequin {
-              avatarUrl
-              id
-              login
-            }
-            ... on Team {
-              id
-              name
-              avatarUrl
-            }
-            ... on User {
-              id
-              name
-              avatarUrl
-            }
-          }
-        }
-      }
-      ... on ProjectV2ItemFieldSingleSelectValue {
-        color
+fragment FieldValueArguments on ProjectV2ItemFieldValue {
+  ... on ProjectV2ItemFieldValueCommon {
+    id
+    field {
+      ... on ProjectV2FieldCommon {
         id
         name
       }
-      ... on ProjectV2ItemFieldTextValue {
+    }
+  }
+  ... on ProjectV2ItemFieldDateValue {
+    date
+  }
+  ... on ProjectV2ItemFieldIterationValue {
+    iterationId
+    title
+    startDate
+    duration
+  }
+  ... on ProjectV2ItemFieldLabelValue {
+    labels(first: 10) {
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      nodes {
         id
-        text
-        field {
-          ... on ProjectV2FieldCommon {
-            name
-            id
-          }
-        }
-      }
-      ... on ProjectV2ItemFieldUserValue {
-        field {
-          ... on ProjectV2FieldCommon {
-            name
-            id
-          }
-        }
-        users(first: 10) {
-          totalCount
-          pageInfo {
-            hasNextPage
-            endCursor
-          }
-          nodes {
-            id
-            name
-            avatarUrl
-          }
-        }
-      }
-      ... on ProjectV2ItemFieldNumberValue {
-        number
+        name
+        color
       }
     }
-  `;
+  }
+  ... on ProjectV2ItemFieldMilestoneValue {
+    milestone {
+      id
+      title
+      state
+    }
+  }
+  ... on ProjectV2ItemFieldPullRequestValue {
+    pullRequests(first: 100) {
+      nodes {
+        id
+        closed
+        title
+      }
+    }
+  }
+  ... on ProjectV2ItemFieldRepositoryValue {
+    repository {
+      name
+      id
+    }
+  }
+  ... on ProjectV2ItemFieldReviewerValue {
+    reviewers(first: 10) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      totalCount
+      nodes {
+        __typename
+        ... on Bot {
+          id
+          login
+          avatarUrl
+        }
+        ... on Mannequin {
+          avatarUrl
+          id
+          login
+        }
+        ... on Team {
+          id
+          name
+          avatarUrl
+        }
+        ... on User {
+          id
+          name
+          login
+          avatarUrl
+        }
+      }
+    }
+  }
+  ... on ProjectV2ItemFieldSingleSelectValue {
+    color
+    id
+    name
+  }
+  ... on ProjectV2ItemFieldTextValue {
+    id
+    text
+    field {
+      ... on ProjectV2FieldCommon {
+        name
+        id
+      }
+    }
+  }
+  ... on ProjectV2ItemFieldUserValue {
+    field {
+      ... on ProjectV2FieldCommon {
+        name
+        id
+      }
+    }
+    users(first: 10) {
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      nodes {
+        id
+        name
+        login
+        avatarUrl
+      }
+    }
+  }
+  ... on ProjectV2ItemFieldNumberValue {
+    number
+  }
+}`;
 }

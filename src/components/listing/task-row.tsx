@@ -87,10 +87,18 @@ function renderField(field: string, task: Tasks) {
       const milestone = getNestedValue<MilestoneNode>(fieldValue, "milestone");
       if (!milestone) return null;
 
-      childComponent = (
-        <Badge>{milestone.title}</Badge>
+      return (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <Badge>{milestone.title}</Badge>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Milestone</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       )
-      break;
     default:
       return null
   }
