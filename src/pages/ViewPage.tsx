@@ -7,8 +7,7 @@ import { SimpleTaskListing } from "@/components/listing/simple-listing"
 import { ViewOptions } from "@/components/listing/view-options"
 import { useState } from "react"
 import { viewOptionState } from "@/state/views"
-import { Button } from "@/components/ui/button"
-import { ListFilter } from "lucide-react"
+import { ViewFilter } from "@/components/listing/view-filter"
 
 export default function ProjectViewPage() {
   const { projectNumber, viewNumber } = useParams()
@@ -37,10 +36,7 @@ export default function ProjectViewPage() {
   return (
     <div className="p-4">
       <div className="flex justify-between mb-4">
-        <Button variant={"outline"}>
-          <ListFilter />
-          Filter
-        </Button>
+        <ViewFilter projectNumber={Number(projectNumber)} db={db} viewNumber={Number(viewNumber)} />
         <ViewOptions projectNumber={Number(projectNumber)} db={db} viewNumber={Number(viewNumber)} />
       </div>
       {hasGroupBy ? (

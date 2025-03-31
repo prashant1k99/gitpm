@@ -15,7 +15,7 @@ export type ProjectStatusUpdates = {
   bodyHTML: string,
   creator: {
     login: string,
-    avatarURL: string,
+    avatarUrl: string,
   },
   status: ProjectStatus
 }
@@ -25,6 +25,7 @@ export type TProjectV2QR = {
   number: number,
   title: string,
   shortDescription: string,
+  statusUpdates: { nodes: ProjectStatusUpdates[] }
   readme: string,
   template: boolean,
   public: boolean,

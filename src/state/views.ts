@@ -15,13 +15,68 @@ const viewState = signal<IViewState>({
   selectedIds: [],
 })
 
+
 export enum FilterOptionOperations {
-  EQ,
-  GT,
-  LT,
-  GTE,
-  LTE
+  Equal,
+  NotEqual,
+  GreaterThan,
+  LessThan,
+  GreaterThanOrEqual,
+  LessThanOrEqual,
+  IsEmpty,
+  IsNotEmpty,
 }
+
+export const operationDisplayProperties: {
+  [key in FilterOptionOperations]: {
+    display: string,
+    name: string,
+    symbol: string
+  }
+} = {
+  [FilterOptionOperations.Equal]: {
+    name: "Is equal to",
+    display: ":",
+    symbol: "="
+  },
+  [FilterOptionOperations.NotEqual]: {
+    name: "Is not equal to",
+    display: "!:",
+    symbol: "!="
+  },
+  [FilterOptionOperations.GreaterThan]: {
+    name: "Is greater than",
+    display: ">",
+    symbol: ">"
+  },
+  [FilterOptionOperations.LessThan]: {
+    name: "Is less than",
+    display: "<",
+    symbol: "<"
+  },
+  [FilterOptionOperations.GreaterThanOrEqual]: {
+    name: "Is greater than or equal to",
+    display: ">=",
+    symbol: ">="
+  },
+  [FilterOptionOperations.LessThanOrEqual]: {
+    name: "Is less than or equal to",
+    display: "<=",
+    symbol: "<="
+  },
+  [FilterOptionOperations.IsEmpty]: {
+    name: "Is empty",
+    display: "",
+    symbol: ""
+  },
+  [FilterOptionOperations.IsNotEmpty]: {
+    name: "Is not empty",
+    display: "",
+    symbol: ""
+  }
+}
+
+export const operationsSupportedForType = ""
 
 export interface IFilterOptions {
   [key: string]: unknown,

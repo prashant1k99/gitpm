@@ -93,13 +93,13 @@ export function ViewOptions({
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-72 flex flex-col gap-2.5 bg-sidebar border border-border p-3 rounded-xl">
         <div className="flex justify-around gap-2">
-          <div onClick={() => setViewLayout(IViewLayout.TABLE_LAYOUT)} className={`flex flex-col w-full border p-2 justify-center items-center rounded-lg hover:bg-accent cursor-pointer ${layout == IViewLayout.TABLE_LAYOUT && "bg-accent"}`}>
+          <div tabIndex={0} onClick={() => setViewLayout(IViewLayout.TABLE_LAYOUT)} className={`select-none flex flex-col w-full border p-2 justify-center items-center rounded-lg hover:bg-accent cursor-pointer ${layout == IViewLayout.TABLE_LAYOUT && "bg-accent"}`}>
             <Logs />
             <div className="text-sm font-light">
               List
             </div>
           </div>
-          <div onClick={() => setViewLayout(IViewLayout.BOARD_LAYOUT)} className={`flex flex-col w-full border p-2 justify-center items-center rounded-lg hover:bg-accent cursor-pointer ${layout == IViewLayout.BOARD_LAYOUT && "bg-accent"}`}>
+          <div tabIndex={0} onClick={() => setViewLayout(IViewLayout.BOARD_LAYOUT)} className={`select-none flex flex-col w-full border p-2 justify-center items-center rounded-lg hover:bg-accent cursor-pointer ${layout == IViewLayout.BOARD_LAYOUT && "bg-accent"}`}>
             <Kanban />
             <div className="text-sm font-light">
               Board
@@ -111,14 +111,14 @@ export function ViewOptions({
             Grouping
           </div>
           <Select onValueChange={handleGroupByChange} value={groupByField?.fieldQueryName || 'null'}>
-            <SelectTrigger className="w-[180px] cursor-pointer">
+            <SelectTrigger tabIndex={0} className="w-[180px] cursor-pointer">
               <SelectValue placeholder="Group By" className="text-xs" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Group By Field</SelectLabel>
                 {fields?.map(field => (
-                  <SelectItem key={field.id} value={field.fieldQueryName} className="text-sm">{field.name}</SelectItem>
+                  <SelectItem tabIndex={0} key={field.id} value={field.fieldQueryName} className="text-sm">{field.name}</SelectItem>
                 ))}
                 <SelectItem value="null" className="text-sm">No Grouping</SelectItem>
               </SelectGroup>
@@ -130,13 +130,13 @@ export function ViewOptions({
         <span className="text-xs font-extralight">Display properties</span>
         <div className="flex flex-wrap gap-2">
           {constantDisplayFields.map(field =>
-            <div onClick={() => toggleFieldVisibleConst(field.id)} key={field.id}
+            <div tabIndex={0} onClick={() => toggleFieldVisibleConst(field.id)} key={field.id}
               className={`cursor-pointer select-none font-light text-sm w-fit p-0 px-2 rounded-md ${selectedConstFieldOptions.includes(field.id) && "bg-sidebar-accent border border-accent-foreground"}`}>
               {field.name}
             </div>
           )}
           {fieldOptions.map(field =>
-            <div onClick={() => toggleFieldVisible(field.fieldQueryName)} key={field.id}
+            <div tabIndex={0} onClick={() => toggleFieldVisible(field.fieldQueryName)} key={field.id}
               className={`cursor-pointer font-light select-none text-sm w-fit p-0 px-2 rounded-md ${selectedFieldOptions.includes(field.fieldQueryName) && "bg-sidebar-accent border border-accent-foreground"}`}>
               {field.name}
             </div>
