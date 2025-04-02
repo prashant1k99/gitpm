@@ -7,12 +7,16 @@ export interface IViewState {
   orgLogin: string
   activeViewId: number | null
   selectedIds: string[]
+  filterOptions: {
+    [field: string]: unknown[]
+  }
 }
 
 const viewState = signal<IViewState>({
   orgLogin: "",
   activeViewId: null,
   selectedIds: [],
+  filterOptions: {}
 })
 
 
@@ -147,7 +151,8 @@ effect(() => {
       viewState.value = {
         orgLogin: orgState.value.activeOrg?.login as string,
         activeViewId: null,
-        selectedIds: []
+        selectedIds: [],
+        filterOptions: {}
       }
     })
   }

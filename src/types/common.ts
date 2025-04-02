@@ -11,3 +11,10 @@ export enum IViewLayout {
   BOARD_LAYOUT = "BOARD_LAYOUT"
 }
 
+export interface IUser {
+  id: string,
+  name: string,
+  login: string,
+  avatarUrl: string
+}
+

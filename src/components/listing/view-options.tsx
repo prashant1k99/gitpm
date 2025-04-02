@@ -33,7 +33,7 @@ export function ViewOptions({
   const [selectedConstFieldOptions, setSelectedConstFieldOptions] = useState<ConstVisibleFields[]>([])
 
   const fields = useLiveQuery(() => {
-    return db.fields.where("projectId").equals(Number(projectNumber)).filter(field => !["title", "labels", "linkedpullrequests", "reviewers", "parentissue"].includes(field.fieldQueryName)).filter(field => field.dataType != "DATE").toArray()
+    return db.fields.where("projectId").equals(Number(projectNumber)).filter(field => !["title", "labels", "linkedpullrequests", "reviewers", "parentissue", "subissuesprogress"].includes(field.fieldQueryName)).filter(field => field.dataType != "DATE").toArray()
   })
 
   useEffect(() => {
@@ -65,7 +65,6 @@ export function ViewOptions({
         DataType.MILESTONE,
         DataType.ITERATION,
         DataType.SINGLE_SELECT,
-        DataType.SUB_ISSUES_PROGRESS,
       ].includes(field.dataType)
     ) || []
     setFieldOptions(

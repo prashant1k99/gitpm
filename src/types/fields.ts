@@ -23,6 +23,7 @@ export interface IProjectV2CommonField {
   id: string;
   name: string;
   dataType: DataType;
+  options?: unknown[];
   __typename: 'ProjectV2Field' | 'ProjectV2SingleSelectField' | 'ProjectV2IterationField';
 }
 

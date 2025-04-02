@@ -1,0 +1,92 @@
+query GetProjectInfo($login: String!, $projectNumber: Int!) {
+  viewer {
+    organization(login: $login) {
+      projectV2(number: $projectNumber) {
+        teams(first: 20) {
+          totalCount
+          nodes {
+            id
+            name
+            avatarUrl
+            description
+            parentTeam {
+              name
+              avatarUrl
+              id
+              description
+            }
+            childTeams (first: 100) {
+              nodes {
+                id
+                name
+                avatarUrl
+                description
+              }
+            }
+            memberStatuses (first: 100) {
+              nodes {
+                emoji
+                id
+                message
+                user {
+                  id
+                  name
+                  login
+                  avatarUrl
+                }
+              }
+            }
+            viewerCanAdminister
+          }
+        }
+        repositories(first: 20) {
+          totalCount
+          nodes {
+            id
+            name
+            descriptionHTML
+            milestones(first: 100) {
+              totalCount
+              nodes {
+                id
+                number
+                title
+                description
+                updatedAt
+                state
+                closed
+                closedAt
+                viewerCanClose
+                viewerCanReopen
+                repository {
+                  id
+                  name
+                  descriptionHTML
+                }
+              }
+            }
+            labels(first: 100) {
+              totalCount
+              nodes {
+                id
+                name
+                description
+                isDefault
+                color
+                createdAt
+                repository {
+                  id
+                  name
+                  descriptionHTML
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  rateLimit(dryRun: false) {
+    cost
+  }
+}

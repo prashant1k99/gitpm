@@ -29,13 +29,11 @@ export function ViewFilter({
   console.log(db, projectNumber, viewNumber)
 
   const [visbleOptionTypes, setVisibleOptionType] = useState<VisibleOptionType>(VisibleOptionType.Fields)
-
   const [isOpen, setIsOpen] = useState(false)
-
   const fields = useLiveQuery(() => {
     return db.fields.where("projectId").equals(Number(projectNumber)).filter(field => !["title", "labels", "linkedpullrequests", "reviewers", "parentissue"].includes(field.fieldQueryName)).toArray()
   }, [projectNumber])
-
+  const [isLoadingOptions, setIsLoadingOpetions] = useState(false)
 
   const handleFieldSelect = (fieldId: string) => {
     console.log(fieldId)
@@ -57,7 +55,6 @@ export function ViewFilter({
     setVisibleOptionType(VisibleOptionType.Fields)
   }
 
-
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
@@ -68,20 +65,21 @@ export function ViewFilter({
       </DropdownMenuTrigger>
       <DropdownMenuContent >
         {
-          visbleOptionTypes == VisibleOptionType.Fields ? (
-            fields?.map(field => (
-              <DropdownMenuItem
-                onClick={() => handleFieldSelect(field.fieldQueryName)}
-                onSelect={(e) => e.preventDefault()}
-                tabIndex={0}
-                key={field.id}
-                id={field.id}
-              >
-                {field.name}
-              </DropdownMenuItem>
-            ))
-          ) :
-            visbleOptionTypes === VisibleOptionType.Operations ? (
+          visbleOptionTypes == VisibleOptionType.Fields
+            ? (
+              fields?.map(field => (
+                <DropdownMenuItem
+                  onClick={() => handleFieldSelect(field.fieldQueryName)}
+                  onSelect={(e) => e.preventDefault()}
+                  tabIndex={0}
+                  key={field.id}
+                  id={field.id}
+                >
+                  {field.name}
+                </DropdownMenuItem>
+              ))
+            )
+            : visbleOptionTypes === VisibleOptionType.Operations ? (
               Object.values(FilterOptionOperations).map((operation) => (
                 <DropdownMenuItem
                   key={operation}

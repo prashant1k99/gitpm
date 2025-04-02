@@ -11,12 +11,22 @@ import { useParams } from "react-router-dom";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ProjectStatusForDetailPage } from "@/components/project/status";
+import { ProjectStatusForDetailPage } from "@/components/project/detail-info-status";
+import { Project } from "@/services/api/projects";
+import authState from "@/state/auth";
 
 export default function ProjectDetailPage() {
   const { projectNumber } = useParams();
 
   let db = DB.getDatabases(orgState.value.activeOrg?.login as string)
+
+  useEffect(() => {
+    const projectService = new Project(authState.value.githubToken as string)
+    projectService.getProjectDetails({
+      orgLogin: orgState.value.activeOrg?.login as string,
+      projectNumber: Number(projectNumber)
+    }).then(data => console.log(data)).catch(err => console.error(err))
+  }, [authState.value.githubToken])
 
   useEffect(() => {
     loadAllFieldsForProject(Number(projectNumber)).then(() => {
@@ -90,7 +100,7 @@ export default function ProjectDetailPage() {
                 Teams
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="info">
+            <TabsContent value="info" className="flex flex-col gap-2">
               <ProjectStatusForDetailPage statusUpdates={project.statusUpdates.nodes} />
             </TabsContent>
             <TabsContent value="views">Views for project</TabsContent>

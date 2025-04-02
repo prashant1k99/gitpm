@@ -1,3 +1,5 @@
+import { IUser } from "./common"
+
 export enum ProjectStatus {
   AT_RISK = 'AT_RISK',
   COMPLETE = 'COMPLETE',
@@ -43,3 +45,67 @@ export interface IProjectState {
   isLoading: boolean
 }
 
+export type BaseTeam = {
+  id: string,
+  name: string,
+  avatarUrl: string,
+  description: string
+}
+
+export type TeamMemberStatuses = {
+  id: string,
+  emoji: string,
+  message: string,
+  user: IUser,
+}
+
+export type Teams = BaseTeam & {
+  description: string,
+  parentTeam: BaseTeam,
+  childTeams: {
+    nodes: BaseTeam[]
+  },
+  memberStatuses: {
+    nodes: TeamMemberStatuses[]
+  },
+  viewerCanAdminister: boolean
+}
+
+export type BaseRepository = {
+  id: string,
+  name: string,
+  descriptionHTML: string,
+}
+
+export type RepositoryMilestone = {
+  id: string,
+  number: string,
+  title: string,
+  description: string,
+  updatedAt: string,
+  state: string,
+  closed: boolean,
+  closedAt: string,
+  viewerCanClose: boolean,
+  viwerCanReopen: boolean,
+  repository: BaseRepository
+}
+
+export type RepositoryLabels = {
+  id: string,
+  name: string,
+  description: string,
+  isDefaule: boolean,
+  color: string,
+  createdAt: string,
+  repository: BaseRepository
+}
+
+export type TProjectRepository = BaseRepository & {
+  milestones: {
+    nodes: RepositoryMilestone[]
+  }
+  labels: {
+    nodes: RepositoryLabels[]
+  }
+}

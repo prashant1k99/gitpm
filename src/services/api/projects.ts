@@ -2,6 +2,7 @@ import { IPageInfo } from "@/types/common";
 import { GithubClient } from "../core/github";
 import { TProjectV2QR } from "@/types/projects";
 import projectsQuery from "@/graphql/queries/projects.graphql";
+import projectInfoQuery from "@/graphql/queries/project-detail.graphql"
 import DB from "@/db/organization";
 
 export class Project {
@@ -70,5 +71,12 @@ export class Project {
       pageInfo,
       totalCount
     }
+  }
+
+  getProjectDetails({ orgLogin, projectNumber }: { orgLogin: string, projectNumber: number }) {
+    return this.github.executeGraph(projectInfoQuery, {
+      login: orgLogin,
+      projectNumber
+    })
   }
 }
